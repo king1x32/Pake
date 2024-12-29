@@ -17,9 +17,9 @@ export const DEFAULT_PAKE_OPTIONS: PakeCliOptions = {
   targets: 'appimage',
   useLocalFile: false,
   systemTrayIcon: '',
+  proxyUrl: "",
   debug: false,
   inject: [],
-  safeDomain: [],
   installerLanguage: 'vi-VN',
 };
 
@@ -28,6 +28,5 @@ export const DEFAULT_DEV_PAKE_OPTIONS: PakeCliOptions & { url: string } = {
   ...DEFAULT_PAKE_OPTIONS,
   url: 'https://www.facebook.com/',
   name: 'Facebook',
-  safeDomain: ['www.facebook.com'],
   hideTitleBar: true,
 };

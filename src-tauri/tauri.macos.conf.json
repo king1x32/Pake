@@ -1,27 +1,12 @@
 {
-  "tauri": {
-    "bundle": {
+  "bundle": {
       "icon": [
         "icons/facebook.icns"
       ],
-      "identifier": "com.pake.facebook",
       "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
-      "externalBin": [],
-      "longDescription": "",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": [],
-      "shortDescription": "",
+      "macOS": {},
       "targets": [
         "dmg"
       ]
     }
   }
-}

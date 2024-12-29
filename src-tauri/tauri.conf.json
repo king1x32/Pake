@@ -1,43 +1,16 @@
 {
-  "package": {
-    "productName": "Facebook",
-    "version": "1.0.0"
-  },
-  "tauri": {
-    "security": {
-      "csp": null,
-      "dangerousRemoteDomainIpcAccess": [
-        {
-          "domain": "www.facebook.com",
-          "windows": [
-            "pake"
-          ],
-          "enableTauriAPI": true
+  "productName": "Facebook",
+      "identifier": "com.pake.facebook",
+      "version": "1.0.0",
+      "app": {
+        "withGlobalTauri": true,
+        "trayIcon": {
+          "iconPath": "png/facebook_512.png",
+          "iconAsTemplate": false,
+          "id": "pake-tray"
         }
-      ]
-    },
-    "updater": {
-      "active": false
-    },
-    "systemTray": {
-      "iconPath": "png/facebook_512.png",
-      "iconAsTemplate": false
-    },
-    "allowlist": {
-      "all": true,
-      "fs": {
-        "all": true,
-        "scope": [
-          "$DOWNLOAD/*"
-        ]
+      },
+      "build": {
+        "frontendDist": "../dist"
       }
     }
-  },
-  "build": {
-    "withGlobalTauri": true,
-    "devPath": "../dist",
-    "distDir": "../dist",
-    "beforeBuildCommand": "",
-    "beforeDevCommand": ""
-  }
-}

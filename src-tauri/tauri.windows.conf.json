@@ -1,34 +1,24 @@
 {
-  "tauri": {
-    "bundle": {
-      "icon": [
-        "png/facebook_256.ico",
-        "png/facebook_32.ico"
-      ],
-      "identifier": "com.pake.facebook",
-      "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
-      "externalBin": [],
-      "longDescription": "",
-      "resources": [
-        "png/facebook_32.ico"
-      ],
-      "shortDescription": "",
-      "targets": [
-        "msi"
-      ],
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": "",
-        "wix": {
-          "language": [
-            "vi-VN"
+  "bundle": {
+          "icon": [
+            "png/facebook_256.ico",
+            "png/facebook_32.ico"
           ],
-          "template": "assets/main.wxs"
+          "active": true,
+          "resources": [
+            "png/facebook_32.ico"
+          ],
+          "targets": [
+            "msi"
+          ],
+          "windows": {
+            "digestAlgorithm": "sha256",
+            "wix": {
+              "language": [
+                "vi-VN"
+              ],
+              "template": "assets/main.wxs"
+            }
+          }
         }
       }
-    }
-  }
-}
