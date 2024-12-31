@@ -9,7 +9,7 @@ import os from 'os';
 
 const desktopEntry = `[Desktop Entry]
 Encoding=UTF-8
-Version=2.0.0
+Version=3.0.0
 Exec=com-pake-${process.env.NAME}
 Icon=com-pake-${process.env.NAME}
 Name=com-pake-${process.env.NAME}
