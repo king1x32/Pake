@@ -1,24 +1,16 @@
 {
-  "productName": "facebook",
-    "bundle": {
-      "icon": [
-        "png/facebook_512.png"
-      ],
-      "active": true,
-      "linux": {
-        "deb": {
-          "depends": [
-            "curl",
-            "wget"
-          ],
-          "files": {
-            "/usr/share/applications/com-pake-facebook.desktop": "assets/com-pake-facebook.desktop"
-          }
+  "productName": "zalo",
+  "bundle": {
+    "icon": ["png/zalo_512.png"],
+    "active": true,
+    "linux": {
+      "deb": {
+        "depends": ["curl", "wget"],
+        "files": {
+          "/usr/share/applications/com-pake-zalo.desktop": "assets/com-pake-zalo.desktop"
         }
-      },
-      "targets": [
-        "deb",
-        "appimage"
-      ]
-    }
+      }
+    },
+    "targets": ["deb", "appimage"]
   }
+}

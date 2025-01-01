@@ -1,11 +1,11 @@
 {
-  "productName": "Facebook",
-  "identifier": "com.pake.facebook",
+  "productName": "Zalo",
+  "identifier": "com.pake.zalo",
   "version": "3.0.0",
   "app": {
     "withGlobalTauri": true,
     "trayIcon": {
-      "iconPath": "png/facebook_512.png",
+      "iconPath": "png/zalo_512.png",
       "iconAsTemplate": false,
       "id": "pake-tray"
     }
