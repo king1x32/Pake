@@ -1,48 +1,9 @@
 {
   "windows": [
     {
-      "url": "https://www.facebook.com/",
-      "url_type": "web",
-      "hide_title_bar": true,
-      "fullscreen": false,
-      "width": 1200,
-      "height": 780,
-      "resizable": true,
-      "dark_mode": true,
-      "always_on_top": false,
-      "activation_shortcut": "",
-      "disabled_web_shortcuts": false
-    },
-    {
-      "url": "https://chat.zalo.me/",
-      "url_type": "web",
-      "hide_title_bar": true,
-      "fullscreen": false,
-      "width": 1200,
-      "height": 780,
-      "resizable": true,
-      "dark_mode": true,
-      "always_on_top": false,
-      "activation_shortcut": "",
-      "disabled_web_shortcuts": false
-    },
-    {
       "url": "https://discord.com/channels/@me/",
       "url_type": "web",
-      "hide_title_bar": true,
-      "fullscreen": false,
-      "width": 1200,
-      "height": 780,
-      "resizable": true,
-      "dark_mode": true,
-      "always_on_top": false,
-      "activation_shortcut": "",
-      "disabled_web_shortcuts": false
-    },
-    {
-      "url": "https://web.telegram.org/k/",
-      "url_type": "web",
-      "hide_title_bar": true,
+      "hide_title_bar": false,
       "fullscreen": false,
       "width": 1200,
       "height": 780,
@@ -63,7 +24,7 @@
     "linux": true,
     "windows": true
   },
-  "system_tray_path": "icons/icon.png",
+  "system_tray_path": "png/discord_512.png",
   "inject": [],
   "proxy_url": ""
 }

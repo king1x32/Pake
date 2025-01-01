@@ -1,24 +1,24 @@
 {
-  "productName": "facebook",
-    "bundle": {
-      "icon": [
-        "png/facebook_512.png"
-      ],
-      "active": true,
-      "linux": {
-        "deb": {
-          "depends": [
-            "curl",
-            "wget"
-          ],
-          "files": {
-            "/usr/share/applications/com-pake-facebook.desktop": "assets/com-pake-facebook.desktop"
-          }
+  "productName": "discord",
+  "bundle": {
+    "icon": [
+      "png/discord_512.png"
+    ],
+    "active": true,
+    "linux": {
+      "deb": {
+        "depends": [
+          "curl",
+          "wget"
+        ],
+        "files": {
+          "/usr/share/applications/com-pake-facebook.desktop": "assets/com-pake-discord.desktop"
         }
-      },
-      "targets": [
-        "deb",
-        "appimage"
-      ]
-    }
+      }
+    },
+    "targets": [
+      "deb",
+      "appimage"
+    ]
   }
+}

@@ -1,11 +1,11 @@
 {
-  "productName": "Facebook",
-  "identifier": "com.pake.facebook",
+  "productName": "Discord",
+  "identifier": "com.pake.discord",
   "version": "3.0.0",
   "app": {
     "withGlobalTauri": true,
     "trayIcon": {
-      "iconPath": "png/facebook_512.png",
+      "iconPath": "png/discord_512.png",
       "iconAsTemplate": false,
       "id": "pake-tray"
     }

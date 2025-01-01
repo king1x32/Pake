@@ -1,24 +1,15 @@
 {
   "bundle": {
-          "icon": [
-            "png/facebook_256.ico",
-            "png/facebook_32.ico"
-          ],
-          "active": true,
-          "resources": [
-            "png/facebook_32.ico"
-          ],
-          "targets": [
-            "msi"
-          ],
-          "windows": {
-            "digestAlgorithm": "sha256",
-            "wix": {
-              "language": [
-                "vi-VN"
-              ],
-              "template": "assets/main.wxs"
-            }
-          }
-        }
+    "icon": ["png/discord_512.ico", "png/discord_32.ico"],
+    "active": true,
+    "resources": ["png/discord_32.ico"],
+    "targets": ["msi"],
+    "windows": {
+      "digestAlgorithm": "sha256",
+      "wix": {
+        "language": ["vi-VN"],
+        "template": "assets/main.wxs"
       }
+    }
+  }
+}

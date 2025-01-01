@@ -1,26 +1,8 @@
 [
   {
-    "name": "facebook",
-    "title": "Facebook",
-    "name_zh": "Facebook",
-    "url": "https://www.facebook.com/"
-  },
-  {
-    "name": "zalo",
-    "title": "Zalo",
-    "name_zh": "Zalo",
-    "url": "https://chat.zalo.me/"
-  },
-  {
     "name": "discord",
     "title": "Discord",
     "name_zh": "Discord",
     "url": "https://discord.com/channels/@me/"
-  },
-  {
-    "name": "telegram",
-    "title": "Telegram",
-    "name_zh": "Telegram",
-    "url": "https://web.telegram.org/k/"
   }
 ]

@@ -1,12 +1,8 @@
 {
   "bundle": {
-      "icon": [
-        "icons/facebook.icns"
-      ],
-      "active": true,
-      "macOS": {},
-      "targets": [
-        "dmg"
-      ]
-    }
+    "icon": ["icons/discord.icns"],
+    "active": true,
+    "macOS": {},
+    "targets": ["dmg"]
   }
+}
