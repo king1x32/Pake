@@ -4,5 +4,17 @@
     "title": "Facebook",
     "name_zh": "Facebook",
     "url": "https://www.facebook.com/"
+  },
+  {
+    "name": "discord",
+    "title": "Discord",
+    "name_zh": "Discord",
+    "url": "https://discord.com/channels/@me/"
+  },
+  {
+    "name": "zalo",
+    "title": "Zalo",
+    "name_zh": "Zalo",
+    "url": "https://chat.zalo.me/"
   }
 ]
