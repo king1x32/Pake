@@ -3,7 +3,7 @@
     {
       "url": "https://www.facebook.com/",
       "url_type": "web",
-      "hide_title_bar": false,
+      "hide_title_bar": true,
       "fullscreen": false,
       "width": 1200,
       "height": 780,
@@ -20,7 +20,7 @@
     "windows": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
   },
   "system_tray": {
-    "macos": false,
+    "macos": true,
     "linux": true,
     "windows": true
   },
