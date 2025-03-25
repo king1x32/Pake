@@ -3,7 +3,7 @@
     {
       "url": "https://www.facebook.com/",
       "url_type": "web",
-      "hide_title_bar": false,
+      "hide_title_bar": true,
       "fullscreen": false,
       "width": 1200,
       "height": 780,
