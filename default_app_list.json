@@ -1,5 +1,11 @@
 [
   {
+    "name": "gemini",
+    "title": "Gemini",
+    "name_zh": "Gemini",
+    "url": "https://aistudio.google.com/"
+  },
+  {
     "name": "facebook",
     "title": "Facebook",
     "name_zh": "Facebook",
@@ -9,7 +15,7 @@
     "name": "discord",
     "title": "Discord",
     "name_zh": "Discord",
-    "url": "https://discord.com/channels/@me/"
+    "url": "https://discord.com/app"
   },
   {
     "name": "zalo",
