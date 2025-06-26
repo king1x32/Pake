@@ -5,7 +5,7 @@ on:
       platform:
         description: 'Platform'
         required: true
-        default: ubuntu-20.04
+        default: ubuntu-24.04
         type: choice
         options:
           - 'windows-latest'
@@ -14,31 +14,37 @@ on:
       url:
         description: 'URL'
         required: true
-        default: https://www.facebook.com/
+        default: https://www.facebook.com/messages/
         type: choice
         options:
+          - https://aistudio.google.com/
           - https://www.facebook.com/
+          - https://www.facebook.com/messages/
           - https://web.telegram.org/k/
           - https://discord.com/channels/@me/
           - https://chat.zalo.me/
       name:
         description: 'Name, English, Linux no capital'
         required: true
-        default: facebook
+        default: messenger
         type: choice
-        options: [facebook, telegram, discord, zalo]
+        options: [gemini, facebook, messenger, telegram, discord, zalo]
       icon:
         description: 'Icon, Image URL, Optional'
         required: false
-        default: https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/facebook_256.png
+        default: https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/messenger_256.png
         type: choice
         options:
           - '* Windows:'
+          - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/gemini_256.ico
           - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/facebook_256.ico
+          - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/messenger_256.ico
           - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/discord_256.ico
           - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/zalo_256.ico
           - '* Linux:'
+          - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/gemini_256.png
           - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/facebook_256.png
+          - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/messenger_256.png
           - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/telegram_256.png
           - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/discord_256.png
           - https://github.com/kingsmanvn1x32/Pake/raw/master/src-tauri/png/zalo_256.png
@@ -68,13 +74,12 @@ on:
       targets:
         description: 'Targets, Linux only, Optional'
         required: false
-        default: appimage
+        default: deb
         type: choice
         options:
           - 'deb'
           - 'appimage'
           - 'rpm'
-
 jobs:
   build:
     name: ${{ inputs.platform }}
@@ -88,7 +93,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-
       - name: Install Rust for ubuntu-24.04
         if: inputs.platform == 'ubuntu-24.04'
         uses: dtolnay/rust-toolchain@stable
@@ -149,7 +153,6 @@ jobs:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig
           PKG_CONFIG_ALLOW_SYSTEM_LIBS: 1
           PKG_CONFIG_ALLOW_SYSTEM_CFLAGS: 1
-
       - name: Upload archive
         uses: actions/upload-artifact@v4
         with:
