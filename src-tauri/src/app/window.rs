@@ -28,8 +28,10 @@ pub fn set_window(app: &mut App, config: &PakeConfig, tauri_config: &Config) -> 
         serde_json::to_string(&window_config).unwrap()
     );
 
+    let window_title = window_config.title.as_deref().unwrap_or("");
+
     let mut window_builder = WebviewWindowBuilder::new(app, "pake", url)
-        .title("")
+        .title(window_title)
         .visible(false)
         .user_agent(user_agent)
         .resizable(window_config.resizable)
@@ -37,15 +39,27 @@ pub fn set_window(app: &mut App, config: &PakeConfig, tauri_config: &Config) -> 
         .inner_size(window_config.width, window_config.height)
         .always_on_top(window_config.always_on_top)
         .disable_drag_drop_handler()
+        .incognito(window_config.incognito)
         .initialization_script(&config_script)
         .initialization_script(include_str!("../inject/component.js"))
         .initialization_script(include_str!("../inject/event.js"))
         .initialization_script(include_str!("../inject/style.js"))
         .initialization_script(include_str!("../inject/custom.js"));
 
+    // Configure WASM support with required headers for SharedArrayBuffer
+    if window_config.enable_wasm {
+        window_builder = window_builder
+            .additional_browser_args("--enable-features=SharedArrayBuffer")
+            .additional_browser_args("--enable-unsafe-webgpu");
+    }
+
+    // Configure proxy if specified
     if !config.proxy_url.is_empty() {
-        window_builder =
-            window_builder.proxy_url(Url::from_str(config.proxy_url.as_str()).unwrap());
+        if let Ok(proxy_url) = Url::from_str(&config.proxy_url) {
+            window_builder = window_builder.proxy_url(proxy_url);
+            #[cfg(debug_assertions)]
+            println!("Proxy configured: {}", config.proxy_url);
+        }
     }
 
     #[cfg(target_os = "macos")]
@@ -62,11 +76,26 @@ pub fn set_window(app: &mut App, config: &PakeConfig, tauri_config: &Config) -> 
         }
     }
 
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(target_os = "windows")]
     {
         window_builder = window_builder
             .data_directory(_data_dir)
             .title(app.package_info().name.clone());
+
+        // Set theme to None for automatic system theme detection on Windows
+        // This allows the window to respond to system theme changes automatically
+        window_builder = window_builder.theme(None);
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        window_builder = window_builder
+            .data_directory(_data_dir)
+            .title(app.package_info().name.clone());
+
+        // Set theme to None for automatic system theme detection on Linux
+        // This allows the window to respond to system theme changes automatically
+        window_builder = window_builder.theme(None);
     }
 
     window_builder.build().expect("Failed to build window")

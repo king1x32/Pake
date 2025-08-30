@@ -22,6 +22,9 @@ export const DEFAULT_PAKE_OPTIONS: PakeCliOptions = {
   debug: false,
   inject: [],
   installerLanguage: 'vi-VN',
+  hideOnClose: true,
+  incognito: false,
+  wasm: false,
 };
 
 // Just for cli development

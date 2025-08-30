@@ -1,12 +1,11 @@
 {
   "bundle": {
       "icon": [
-        "icons/facebook.icns"
-      ],
-      "active": true,
-      "macOS": {},
-      "targets": [
-        "dmg"
-      ]
-    }
+      "icons/facebook.icns"
+    ],
+    "active": true,
+    "targets": [
+      "dmg"
+    ]
   }
+}

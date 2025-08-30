@@ -11,7 +11,9 @@
       "dark_mode": true,
       "always_on_top": false,
       "activation_shortcut": "",
-      "disabled_web_shortcuts": false
+      "disabled_web_shortcuts": false,
+      "hide_on_close": true,
+      "incognito": false
     }
   ],
   "user_agent": {

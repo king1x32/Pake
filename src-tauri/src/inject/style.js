@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', _event => {
+window.addEventListener("DOMContentLoaded", (_event) => {
   // Customize and transform existing functions
   const contentCSS = `
     #page #footer-wrapper,
@@ -21,7 +21,8 @@ window.addEventListener('DOMContentLoaded', _event => {
     #Rightbar > div:nth-child(6) > div.sidebar_compliance,
     #__next > div.PageWithSidebarLayout_centeringDiv___L9br > aside > div > div > a.ChatPageFollowTwitterLink_followLink__Gl2tt,
     #__next > div.PageWithSidebarLayout_centeringDiv___L9br > aside > div > div > a.Button_buttonBase__0QP_m.Button_primary__pIDjn.ChatPageDownloadLinks_downloadButton__amBRh,
-    #__next > div.PageWithSidebarLayout_centeringDiv___L9br > aside > div > div > section a[href*="/contact"] {
+    #__next > div.PageWithSidebarLayout_centeringDiv___L9br > aside > div > div > section a[href*="/contact"],
+    .dc04ec1d .c7f51894 .a1e75851, .a7f3a288 .b91228e4, .efe408db .a24007f4{
       display: none !important;
     }
 
@@ -58,6 +59,14 @@ window.addEventListener('DOMContentLoaded', _event => {
     #__next > div.overflow-hidden.w-full.h-full.relative.flex.z-0 > div.relative.flex.h-full.max-w-full.flex-1.overflow-hidden > div > main > div.absolute.left-2.top-2.z-10.hidden.md\\:inline-block{
       margin-top:20px;
       margin-left: 10px;
+    }
+
+    .a7f3a288.f0d4f23d {
+      padding-top: 34px;
+    }
+
+    .ec92d1d3 {
+      padding-top: 48px;
     }
 
     .chakra-ui-light #app .chakra-heading,
@@ -275,8 +284,23 @@ window.addEventListener('DOMContentLoaded', _event => {
       margin: 0;
       display: inline;
     }
+
+    .AppHeader .AppHeader-globalBar.js-global-bar {
+      padding-top: 35px;
+    }
+
+    .header-overlay .header-logged-out {
+      margin-top: 15px;
+    }
+
+    .w-full #stage-slideover-sidebar {
+      padding-top: 16px;
+    }
+    .w-full #thread #page-header {
+      padding-top: 36px;
+    }
   `;
-  const contentStyleElement = document.createElement('style');
+  const contentStyleElement = document.createElement("style");
   contentStyleElement.innerHTML = contentCSS;
   document.head.appendChild(contentStyleElement);
 
@@ -300,7 +324,7 @@ window.addEventListener('DOMContentLoaded', _event => {
     }
 
     #root > .excalidraw-app> .excalidraw-container .App-menu.App-menu_top{
-       margin-top: 15px;
+      margin-top: 15px;
     }
 
     .geist-page nav.dashboard_nav__PRmJv,
@@ -344,7 +368,7 @@ window.addEventListener('DOMContentLoaded', _event => {
     }
 
     body > div.relative.flex.h-full.w-full.overflow-hidden.transition-colors.z-0 > div.z-\\[21\\].flex-shrink-0.overflow-x-hidden.bg-token-sidebar-surface-primary.max-md\\:\\!w-0 > div > div > div > nav > div.flex.justify-between.h-\\[60px\\].items-center.md\\:h-header-height {
-       padding-top: 25px;
+      padding-top: 25px;
     }
 
     body > div.relative.flex.h-full.w-full.overflow-hidden.transition-colors.z-0 > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.composer-parent.flex.h-full.flex-col.focus-visible\\:outline-0 > div.flex-1.overflow-hidden.\\@container\\/thread > div > div.absolute.left-0.right-0 > div{
@@ -440,9 +464,9 @@ window.addEventListener('DOMContentLoaded', _event => {
       }
     }
   `;
-  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-  if (window['pakeConfig']?.hide_title_bar && isMac) {
-    const topPaddingStyleElement = document.createElement('style');
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  if (window["pakeConfig"]?.hide_title_bar && isMac) {
+    const topPaddingStyleElement = document.createElement("style");
     topPaddingStyleElement.innerHTML = topPaddingCSS;
     document.head.appendChild(topPaddingStyleElement);
   }

@@ -1,16 +1,19 @@
 {
   "productName": "Facebook",
   "identifier": "com.pake.facebook",
-  "version": "3.0.0",
+  "version": "1.0.0",
   "app": {
     "withGlobalTauri": true,
     "trayIcon": {
       "iconPath": "png/facebook_512.png",
       "iconAsTemplate": false,
-      "id": "pake-tray"
+          "id": "pake-tray"
+        },
+        "security": {
+          "headers": {}
+        }
+      },
+      "build": {
+        "frontendDist": "../dist"
+      }
     }
-  },
-  "build": {
-    "frontendDist": "../dist"
-  }
-}

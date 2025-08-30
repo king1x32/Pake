@@ -1,24 +1,21 @@
 {
   "productName": "facebook",
-    "bundle": {
-      "icon": [
-        "png/facebook_512.png"
-      ],
-      "active": true,
-      "linux": {
-        "deb": {
-          "depends": [
-            "curl",
-            "wget"
-          ],
-          "files": {
-            "/usr/share/applications/com-pake-facebook.desktop": "assets/com-pake-facebook.desktop"
-          }
-        }
-      },
-      "targets": [
-        "deb",
-        "appimage"
-      ]
-    }
+  "bundle": {
+    "icon": [
+      "png/facebook_512.png"
+    ],
+    "active": true,
+    "linux": {
+      "deb": {
+        "depends": [
+          "curl",
+          "wget"
+        ]
+      }
+    },
+    "targets": [
+      "deb",
+      "appimage"
+    ]
+  }
   }

@@ -1,13 +1,14 @@
+#!/usr/bin/env node
 import chalk from 'chalk';
 import { InvalidArgumentError, program, Option } from 'commander';
 import log from 'loglevel';
 import path from 'path';
 import fsExtra from 'fs-extra';
+import { fileURLToPath } from 'url';
 import prompts from 'prompts';
-import shelljs from 'shelljs';
+import { execa, execaSync } from 'execa';
 import crypto from 'crypto';
 import ora from 'ora';
-import { fileURLToPath } from 'url';
 import dns from 'dns';
 import http from 'http';
 import { promisify } from 'util';
@@ -16,17 +17,19 @@ import updateNotifier from 'update-notifier';
 import axios from 'axios';
 import { dir } from 'tmp-promise';
 import { fileTypeFromBuffer } from 'file-type';
+import icongen from 'icon-gen';
+import sharp from 'sharp';
 import * as psl from 'psl';
-import isUrl from 'is-url';
 
 var name = "pake-cli";
-var version$1 = "3.1.2";
+var version = "3.2.17";
 var description = "🤱🏻 Turn any webpage into a desktop app with Rust. 🤱🏻 利用 Rust 轻松构建轻量级多端桌面应用。";
 var engines = {
-	node: ">=16.0.0"
+	node: ">=18.0.0"
 };
+var packageManager = "pnpm@10.15.0";
 var bin = {
-	pake: "./cli.js"
+	pake: "./dist/cli.js"
 };
 var repository = {
 	type: "git",
@@ -46,70 +49,71 @@ var keywords = [
 ];
 var files = [
 	"dist",
-	"src-tauri",
-	"cli.js"
+	"src-tauri"
 ];
 var scripts = {
-	start: "npm run dev",
-	dev: "npm run tauri dev",
-	build: "npm run tauri build --release",
-	"build:debug": "npm run tauri build -- --debug",
-	"build:mac": "npm run tauri build -- --target universal-apple-darwin",
-	"build:config": "chmod +x script/app_config.mjs && node script/app_config.mjs",
+	start: "pnpm run dev",
+	dev: "pnpm run tauri dev",
+	build: "tauri build",
+	"build:debug": "tauri build --debug",
+	"build:mac": "tauri build --target universal-apple-darwin",
+	"build:config": "chmod +x scripts/configure-tauri.mjs && node scripts/configure-tauri.mjs",
 	analyze: "cd src-tauri && cargo bloat --release --crates",
 	tauri: "tauri",
-	cli: "rollup -c rollup.config.js --watch",
-	"cli:dev": "cross-env NODE_ENV=development rollup -c rollup.config.js -w",
-	"cli:build": "cross-env NODE_ENV=production rollup -c rollup.config.js",
-	prepublishOnly: "npm run cli:build"
+	cli: "cross-env NODE_ENV=development rollup -c -w",
+	"cli:build": "cross-env NODE_ENV=production rollup -c",
+	test: "pnpm run cli:build && cross-env PAKE_CREATE_APP=1 node tests/index.js",
+	format: "prettier --write . --ignore-unknown && find tests -name '*.js' -exec sed -i '' 's/[[:space:]]*$//' {} \\; && cd src-tauri && cargo fmt --verbose",
+	"format:check": "prettier --check . --ignore-unknown",
+	prepublishOnly: "pnpm run cli:build"
 };
 var type = "module";
-var exports = "./dist/pake.js";
+var exports = "./dist/cli.js";
 var license = "MIT";
 var dependencies = {
-	"@tauri-apps/api": "^1.6.0",
-	"@tauri-apps/cli": "^2.1.0",
-	axios: "^1.7.9",
-	chalk: "^5.4.1",
+	"@tauri-apps/api": "^2.8.0",
+	"@tauri-apps/cli": "^2.8.1",
+	axios: "^1.11.0",
+	chalk: "^5.6.0",
 	commander: "^11.1.0",
+	execa: "^9.6.0",
 	"file-type": "^18.7.0",
-	"fs-extra": "^11.2.0",
-	"is-url": "^1.2.4",
+	"fs-extra": "^11.3.1",
+	"icon-gen": "^5.0.0",
 	loglevel: "^1.9.2",
-	ora: "^7.0.1",
+	ora: "^8.2.0",
 	prompts: "^2.4.2",
 	psl: "^1.15.0",
-	shelljs: "^0.8.5",
+	sharp: "^0.33.5",
 	"tmp-promise": "^3.0.3",
 	"update-notifier": "^7.3.1"
 };
 var devDependencies = {
 	"@rollup/plugin-alias": "^5.1.1",
-	"@rollup/plugin-commonjs": "^25.0.8",
+	"@rollup/plugin-commonjs": "^28.0.6",
 	"@rollup/plugin-json": "^6.1.0",
-	"@rollup/plugin-replace": "^5.0.7",
+	"@rollup/plugin-replace": "^6.0.2",
 	"@rollup/plugin-terser": "^0.4.4",
 	"@types/fs-extra": "^11.0.4",
-	"@types/is-url": "^1.2.32",
-	"@types/node": "^20.17.10",
+	"@types/node": "^20.19.11",
 	"@types/page-icon": "^0.3.6",
 	"@types/prompts": "^2.4.9",
-	"@types/psl": "^1.1.3",
-	"@types/shelljs": "^0.8.15",
 	"@types/tmp": "^0.2.6",
 	"@types/update-notifier": "^6.0.8",
 	"app-root-path": "^3.1.0",
 	"cross-env": "^7.0.3",
-	rollup: "^4.29.1",
+	prettier: "^3.6.2",
+	rollup: "^4.46.3",
 	"rollup-plugin-typescript2": "^0.36.0",
 	tslib: "^2.8.1",
-	typescript: "^5.7.2"
+	typescript: "^5.9.2"
 };
 var packageJson = {
 	name: name,
-	version: version$1,
+	version: version,
 	description: description,
 	engines: engines,
+	packageManager: packageManager,
 	bin: bin,
 	repository: repository,
 	author: author,
@@ -123,134 +127,19 @@ var packageJson = {
 	devDependencies: devDependencies
 };
 
-var windows = [
-	{
-		url: "https://weread.qq.com",
-		url_type: "web",
-		hide_title_bar: true,
-		fullscreen: false,
-		width: 1200,
-		height: 780,
-		resizable: true,
-		always_on_top: false,
-		dark_mode: false,
-		activation_shortcut: "",
-		disabled_web_shortcuts: false
-	}
-];
-var user_agent = {
-	macos: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15",
-	linux: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
-	windows: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
-};
-var system_tray = {
-	macos: false,
-	linux: true,
-	windows: true
-};
-var system_tray_path = "icons/icon.png";
-var inject = [
-];
-var proxy_url = "";
-var pakeConf = {
-	windows: windows,
-	user_agent: user_agent,
-	system_tray: system_tray,
-	system_tray_path: system_tray_path,
-	inject: inject,
-	proxy_url: proxy_url
-};
+// Convert the current module URL to a file path
+const currentModulePath = fileURLToPath(import.meta.url);
+// Resolve the parent directory of the current module
+const npmDirectory = path.join(path.dirname(currentModulePath), '..');
+const tauriConfigDirectory = path.join(npmDirectory, 'src-tauri', '.pake');
 
-var productName$1 = "WeRead";
-var identifier = "com.pake.weread";
-var version = "1.0.0";
-var app = {
-	withGlobalTauri: true,
-	trayIcon: {
-		iconPath: "png/weread_512.png",
-		iconAsTemplate: false,
-		id: "pake-tray"
-	}
-};
-var build = {
-	frontendDist: "../dist"
-};
-var CommonConf = {
-	productName: productName$1,
-	identifier: identifier,
-	version: version,
-	app: app,
-	build: build
-};
-
-var bundle$2 = {
-	icon: [
-		"png/weread_256.ico",
-		"png/weread_32.ico"
-	],
-	active: true,
-	resources: [
-		"png/weread_32.ico"
-	],
-	targets: [
-		"msi"
-	],
-	windows: {
-		digestAlgorithm: "sha256",
-		wix: {
-			language: [
-				"en-US"
-			],
-			template: "assets/main.wxs"
-		}
-	}
-};
-var WinConf = {
-	bundle: bundle$2
-};
-
-var bundle$1 = {
-	icon: [
-		"icons/weread.icns"
-	],
-	active: true,
-	macOS: {
-	},
-	targets: [
-		"dmg"
-	]
-};
-var MacConf = {
-	bundle: bundle$1
-};
-
-var productName = "we-read";
-var bundle = {
-	icon: [
-		"png/weread_512.png"
-	],
-	active: true,
-	linux: {
-		deb: {
-			depends: [
-				"curl",
-				"wget"
-			],
-			files: {
-				"/usr/share/applications/com-pake-weread.desktop": "assets/com-pake-weread.desktop"
-			}
-		}
-	},
-	targets: [
-		"deb",
-		"appimage"
-	]
-};
-var LinuxConf = {
-	productName: productName,
-	bundle: bundle
-};
-
+// Load configs from npm package directory, not from project source
+const tauriSrcDir = path.join(npmDirectory, 'src-tauri');
+const pakeConf = fsExtra.readJSONSync(path.join(tauriSrcDir, 'pake.json'));
+const CommonConf = fsExtra.readJSONSync(path.join(tauriSrcDir, 'tauri.conf.json'));
+const WinConf = fsExtra.readJSONSync(path.join(tauriSrcDir, 'tauri.windows.conf.json'));
+const MacConf = fsExtra.readJSONSync(path.join(tauriSrcDir, 'tauri.macos.conf.json'));
+const LinuxConf = fsExtra.readJSONSync(path.join(tauriSrcDir, 'tauri.linux.conf.json'));
 const platformConfigs = {
     win32: WinConf,
     darwin: MacConf,
@@ -274,7 +163,11 @@ let tauriConfig = {
 
 // Generates an identifier based on the given URL.
 function getIdentifier(url) {
-    const postFixHash = crypto.createHash('md5').update(url).digest('hex').substring(0, 6);
+    const postFixHash = crypto
+        .createHash('md5')
+        .update(url)
+        .digest('hex')
+        .substring(0, 6);
     return `com.pake.${postFixHash}`;
 }
 async function promptText(message, initial) {
@@ -306,40 +199,42 @@ const IS_MAC = platform$1 === 'darwin';
 const IS_WIN = platform$1 === 'win32';
 const IS_LINUX = platform$1 === 'linux';
 
-// Convert the current module URL to a file path
-const currentModulePath = fileURLToPath(import.meta.url);
-// Resolve the parent directory of the current module
-const npmDirectory = path.join(path.dirname(currentModulePath), '..');
-const tauriConfigDirectory = path.join(npmDirectory, 'src-tauri');
-
-function shellExec(command) {
-    return new Promise((resolve, reject) => {
-        shelljs.exec(command, { async: true, silent: false, cwd: npmDirectory }, code => {
-            if (code === 0) {
-                resolve(0);
-            }
-            else {
-                reject(new Error(`Error occurred while executing command "${command}". Exit code: ${code}`));
-            }
+async function shellExec(command, timeout = 300000, env) {
+    try {
+        const { exitCode } = await execa(command, {
+            cwd: npmDirectory,
+            stdio: ['inherit', 'pipe', 'inherit'], // Hide stdout verbose, keep stderr
+            shell: true,
+            timeout,
+            env: env ? { ...process.env, ...env } : process.env,
         });
-    });
+        return exitCode;
+    }
+    catch (error) {
+        const exitCode = error.exitCode ?? 'unknown';
+        const errorMessage = error.message || 'Unknown error occurred';
+        if (error.timedOut) {
+            throw new Error(`Command timed out after ${timeout}ms: "${command}". Try increasing timeout or check network connectivity.`);
+        }
+        throw new Error(`Error occurred while executing command "${command}". Exit code: ${exitCode}. Details: ${errorMessage}`);
+    }
 }
 
 const logger = {
     info(...msg) {
-        log.info(...msg.map(m => chalk.white(m)));
+        log.info(...msg.map((m) => chalk.white(m)));
     },
     debug(...msg) {
         log.debug(...msg);
     },
     error(...msg) {
-        log.error(...msg.map(m => chalk.red(m)));
+        log.error(...msg.map((m) => chalk.red(m)));
     },
     warn(...msg) {
-        log.info(...msg.map(m => chalk.yellow(m)));
+        log.info(...msg.map((m) => chalk.yellow(m)));
     },
     success(...msg) {
-        log.info(...msg.map(m => chalk.green(m)));
+        log.info(...msg.map((m) => chalk.green(m)));
     },
 };
 
@@ -350,12 +245,12 @@ const ping = async (host) => {
     const start = new Date();
     // Prevent timeouts from affecting user experience.
     const requestPromise = new Promise((resolve, reject) => {
-        const req = http.get(`http://${ip.address}`, res => {
+        const req = http.get(`http://${ip.address}`, (res) => {
             const delay = new Date().getTime() - start.getTime();
             res.resume();
             resolve(delay);
         });
-        req.on('error', err => {
+        req.on('error', (err) => {
             reject(err);
         });
     });
@@ -398,34 +293,61 @@ async function installRust() {
     const spinner = getSpinner('Downloading Rust...');
     try {
         await shellExec(IS_WIN ? rustInstallScriptForWindows : rustInstallScriptForMac);
-        spinner.succeed(chalk.green('Rust installed successfully!'));
+        spinner.succeed(chalk.green('✔ Rust installed successfully!'));
     }
     catch (error) {
-        console.error('Error installing Rust:', error.message);
-        spinner.fail(chalk.red('Rust installation failed!'));
+        spinner.fail(chalk.red('✕ Rust installation failed!'));
+        console.error(error.message);
         process.exit(1);
     }
 }
 function checkRustInstalled() {
-    return shelljs.exec('rustc --version', { silent: true }).code === 0;
+    try {
+        execaSync('rustc', ['--version']);
+        return true;
+    }
+    catch {
+        return false;
+    }
 }
 
 async function combineFiles(files, output) {
-    const contents = files.map(file => {
+    const contents = files.map((file) => {
         const fileContent = fs.readFileSync(file);
         if (file.endsWith('.css')) {
             return ("window.addEventListener('DOMContentLoaded', (_event) => { const css = `" +
                 fileContent +
                 "`; const style = document.createElement('style'); style.innerHTML = css; document.head.appendChild(style); });");
         }
-        return "window.addEventListener('DOMContentLoaded', (_event) => { " + fileContent + ' });';
+        return ("window.addEventListener('DOMContentLoaded', (_event) => { " +
+            fileContent +
+            ' });');
     });
     fs.writeFileSync(output, contents.join('\n'));
     return files;
 }
 
 async function mergeConfig(url, options, tauriConf) {
-    const { width, height, fullscreen, hideTitleBar, alwaysOnTop, appVersion, darkMode, disabledWebShortcuts, activationShortcut, userAgent, showSystemTray, systemTrayIcon, useLocalFile, identifier, name, resizable = true, inject, proxyUrl, installerLanguage, } = options;
+    // Ensure .pake directory exists and copy source templates if needed
+    const srcTauriDir = path.join(npmDirectory, 'src-tauri');
+    await fsExtra.ensureDir(tauriConfigDirectory);
+    // Copy source config files to .pake directory (as templates)
+    const sourceFiles = [
+        'tauri.conf.json',
+        'tauri.macos.conf.json',
+        'tauri.windows.conf.json',
+        'tauri.linux.conf.json',
+        'pake.json',
+    ];
+    await Promise.all(sourceFiles.map(async (file) => {
+        const sourcePath = path.join(srcTauriDir, file);
+        const destPath = path.join(tauriConfigDirectory, file);
+        if ((await fsExtra.pathExists(sourcePath)) &&
+            !(await fsExtra.pathExists(destPath))) {
+            await fsExtra.copy(sourcePath, destPath);
+        }
+    }));
+    const { width, height, fullscreen, hideTitleBar, alwaysOnTop, appVersion, darkMode, disabledWebShortcuts, activationShortcut, userAgent, showSystemTray, systemTrayIcon, useLocalFile, identifier, name, resizable = true, inject, proxyUrl, installerLanguage, hideOnClose, incognito, title, wasm, } = options;
     const { platform } = process;
     // Set Windows parameters.
     const tauriConfWindowOptions = {
@@ -438,6 +360,10 @@ async function mergeConfig(url, options, tauriConf) {
         always_on_top: alwaysOnTop,
         dark_mode: darkMode,
         disabled_web_shortcuts: disabledWebShortcuts,
+        hide_on_close: hideOnClose,
+        incognito: incognito,
+        title: title || null,
+        enable_wasm: wasm,
     };
     Object.assign(tauriConf.pake.windows[0], { url, ...tauriConfWindowOptions });
     tauriConf.productName = name;
@@ -465,7 +391,7 @@ async function mergeConfig(url, options, tauriConf) {
             // ignore it, because about_pake.html have be erased.
             // const filesToCopyBack = ['cli.js', 'about_pake.html'];
             const filesToCopyBack = ['cli.js'];
-            await Promise.all(filesToCopyBack.map(file => fsExtra.copy(path.join(distBakDir, file), path.join(distDir, file))));
+            await Promise.all(filesToCopyBack.map((file) => fsExtra.copy(path.join(distBakDir, file), path.join(distDir, file))));
         }
         tauriConf.pake.windows[0].url = fileName;
         tauriConf.pake.windows[0].url_type = 'local';
@@ -485,13 +411,57 @@ async function mergeConfig(url, options, tauriConf) {
     tauriConf.pake.system_tray[currentPlatform] = showSystemTray;
     // Processing targets are currently only open to Linux.
     if (platform === 'linux') {
+        // Remove hardcoded desktop files and regenerate with correct app name
         delete tauriConf.bundle.linux.deb.files;
-        const validTargets = ['deb', 'appimage', 'rpm'];
+        // Generate correct desktop file configuration
+        const appNameLower = name.toLowerCase();
+        const identifier = `com.pake.${appNameLower}`;
+        const desktopFileName = `${identifier}.desktop`;
+        // Create desktop file content
+        const desktopContent = `[Desktop Entry]
+Version=1.0
+Type=Application
+Name=${name}
+Comment=${name}
+Exec=${appNameLower}
+Icon=${appNameLower}
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml_xml;
+StartupNotify=true
+`;
+        // Write desktop file to src-tauri/assets directory where Tauri expects it
+        const srcAssetsDir = path.join(npmDirectory, 'src-tauri/assets');
+        const srcDesktopFilePath = path.join(srcAssetsDir, desktopFileName);
+        await fsExtra.ensureDir(srcAssetsDir);
+        await fsExtra.writeFile(srcDesktopFilePath, desktopContent);
+        // Set up desktop file in bundle configuration
+        // Use absolute path from src-tauri directory to assets
+        tauriConf.bundle.linux.deb.files = {
+            [`/usr/share/applications/${desktopFileName}`]: `assets/${desktopFileName}`,
+        };
+        const validTargets = [
+            'deb',
+            'appimage',
+            'rpm',
+            'deb-arm64',
+            'appimage-arm64',
+            'rpm-arm64',
+        ];
+        const baseTarget = options.targets.includes('-arm64')
+            ? options.targets.replace('-arm64', '')
+            : options.targets;
         if (validTargets.includes(options.targets)) {
-            tauriConf.bundle.targets = [options.targets];
+            tauriConf.bundle.targets = [baseTarget];
         }
         else {
             logger.warn(`✼ The target must be one of ${validTargets.join(', ')}, the default 'deb' will be used.`);
+        }
+    }
+    // Set macOS bundle targets (for app vs dmg)
+    if (platform === 'darwin') {
+        const validMacTargets = ['app', 'dmg'];
+        if (validMacTargets.includes(options.targets)) {
+            tauriConf.bundle.targets = [options.targets];
         }
     }
     // Set icon.
@@ -516,7 +486,7 @@ async function mergeConfig(url, options, tauriConf) {
         },
     };
     const iconInfo = platformIconMap[platform];
-    const exists = await fsExtra.pathExists(options.icon);
+    const exists = options.icon && (await fsExtra.pathExists(options.icon));
     if (exists) {
         let updateIconPath = true;
         let customIconExt = path.extname(options.icon).toLowerCase();
@@ -528,7 +498,12 @@ async function mergeConfig(url, options, tauriConf) {
         else {
             const iconPath = path.join(npmDirectory, 'src-tauri/', iconInfo.path);
             tauriConf.bundle.resources = [iconInfo.path];
-            await fsExtra.copy(options.icon, iconPath);
+            // Avoid copying if source and destination are the same
+            const absoluteIconPath = path.resolve(options.icon);
+            const absoluteDestPath = path.resolve(iconPath);
+            if (absoluteIconPath !== absoluteDestPath) {
+                await fsExtra.copy(options.icon, iconPath);
+            }
         }
         if (updateIconPath) {
             tauriConf.bundle.icon = [options.icon];
@@ -569,11 +544,11 @@ async function mergeConfig(url, options, tauriConf) {
     const injectFilePath = path.join(npmDirectory, `src-tauri/src/inject/custom.js`);
     // inject js or css files
     if (inject?.length > 0) {
-        if (!inject.every(item => item.endsWith('.css') || item.endsWith('.js'))) {
+        if (!inject.every((item) => item.endsWith('.css') || item.endsWith('.js'))) {
             logger.error('The injected file must be in either CSS or JS format.');
             return;
         }
-        const files = inject.map(filepath => (path.isAbsolute(filepath) ? filepath : path.join(process.cwd(), filepath)));
+        const files = inject.map((filepath) => path.isAbsolute(filepath) ? filepath : path.join(process.cwd(), filepath));
         tauriConf.pake.inject = files;
         await combineFiles(files, injectFilePath);
     }
@@ -582,6 +557,15 @@ async function mergeConfig(url, options, tauriConf) {
         await fsExtra.writeFile(injectFilePath, '');
     }
     tauriConf.pake.proxy_url = proxyUrl || '';
+    // Configure WASM support with required HTTP headers
+    if (wasm) {
+        tauriConf.app.security = {
+            headers: {
+                'Cross-Origin-Opener-Policy': 'same-origin',
+                'Cross-Origin-Embedder-Policy': 'require-corp',
+            },
+        };
+    }
     // Save config file.
     const platformConfigPaths = {
         win32: 'tauri.windows.conf.json',
@@ -590,7 +574,6 @@ async function mergeConfig(url, options, tauriConf) {
     };
     const configPath = path.join(tauriConfigDirectory, platformConfigPaths[platform]);
     const bundleConf = { bundle: tauriConf.bundle };
-    console.log('pakeConfig', tauriConf.pake);
     await fsExtra.outputJSON(configPath, bundleConf, { spaces: 4 });
     const pakeConfigPath = path.join(tauriConfigDirectory, 'pake.json');
     await fsExtra.outputJSON(pakeConfigPath, tauriConf.pake, { spaces: 4 });
@@ -603,6 +586,47 @@ async function mergeConfig(url, options, tauriConf) {
 class BaseBuilder {
     constructor(options) {
         this.options = options;
+    }
+    getBuildEnvironment() {
+        return IS_MAC
+            ? {
+                CFLAGS: '-fno-modules',
+                CXXFLAGS: '-fno-modules',
+                MACOSX_DEPLOYMENT_TARGET: '14.0',
+            }
+            : undefined;
+    }
+    getInstallTimeout() {
+        return process.platform === 'win32' ? 600000 : 300000;
+    }
+    getBuildTimeout() {
+        return 900000; // 15 minutes for all builds
+    }
+    async detectPackageManager() {
+        // 使用缓存避免重复检测
+        if (BaseBuilder.packageManagerCache) {
+            return BaseBuilder.packageManagerCache;
+        }
+        const { execa } = await import('execa');
+        // 优先使用pnpm（如果可用）
+        try {
+            await execa('pnpm', ['--version'], { stdio: 'ignore' });
+            logger.info('✺ Using pnpm for package management.');
+            BaseBuilder.packageManagerCache = 'pnpm';
+            return 'pnpm';
+        }
+        catch {
+            // pnpm不可用，回退到npm
+            try {
+                await execa('npm', ['--version'], { stdio: 'ignore' });
+                logger.info('✺ pnpm not available, using npm for package management.');
+                BaseBuilder.packageManagerCache = 'npm';
+                return 'npm';
+            }
+            catch {
+                throw new Error('Neither pnpm nor npm is available. Please install a package manager.');
+            }
+        }
     }
     async prepare() {
         const tauriSrcPath = path.join(npmDirectory, 'src-tauri');
@@ -631,14 +655,23 @@ class BaseBuilder {
         const rustProjectDir = path.join(tauriSrcPath, '.cargo');
         const projectConf = path.join(rustProjectDir, 'config.toml');
         await fsExtra.ensureDir(rustProjectDir);
+        // 智能检测可用的包管理器
+        const packageManager = await this.detectPackageManager();
+        const registryOption = isChina
+            ? ' --registry=https://registry.npmmirror.com'
+            : '';
+        // 根据包管理器类型设置依赖冲突解决选项
+        const peerDepsOption = packageManager === 'npm' ? ' --legacy-peer-deps' : '';
+        const timeout = this.getInstallTimeout();
+        const buildEnv = this.getBuildEnvironment();
         if (isChina) {
-            logger.info('✺ Located in China, using npm/rsProxy CN mirror.');
+            logger.info(`✺ Located in China, using ${packageManager}/rsProxy CN mirror.`);
             const projectCnConf = path.join(tauriSrcPath, 'rust_proxy.toml');
             await fsExtra.copy(projectCnConf, projectConf);
-            await shellExec(`cd "${npmDirectory}" && npm install --registry=https://registry.npmmirror.com`);
+            await shellExec(`cd "${npmDirectory}" && ${packageManager} install${registryOption}${peerDepsOption} --silent`, timeout, buildEnv);
         }
         else {
-            await shellExec(`cd "${npmDirectory}" && npm install`);
+            await shellExec(`cd "${npmDirectory}" && ${packageManager} install${peerDepsOption} --silent`, timeout, buildEnv);
         }
         spinner.succeed(chalk.green('Package installed!'));
         if (!tauriTargetPathExists) {
@@ -654,10 +687,17 @@ class BaseBuilder {
     async buildAndCopy(url, target) {
         const { name } = this.options;
         await mergeConfig(url, this.options, tauriConfig);
+        // Detect available package manager
+        const packageManager = await this.detectPackageManager();
         // Build app
-        const spinner = getSpinner('Building app...');
-        setTimeout(() => spinner.stop(), 3000);
-        await shellExec(`cd "${npmDirectory}" && ${this.getBuildCommand()}`);
+        const buildSpinner = getSpinner('Building app...');
+        // Let spinner run for a moment so user can see it, then stop before package manager command
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        buildSpinner.stop();
+        // Show static message to keep the status visible
+        logger.warn('✸ Building app...');
+        const buildEnv = this.getBuildEnvironment();
+        await shellExec(`cd "${npmDirectory}" && ${this.getBuildCommand(packageManager)}`, this.getBuildTimeout(), buildEnv);
         // Copy app
         const fileName = this.getFileName();
         const fileType = this.getFileType(target);
@@ -671,68 +711,268 @@ class BaseBuilder {
     getFileType(target) {
         return target;
     }
-    getBuildCommand() {
-        // the debug option should support `--debug` and `--release`
-        return this.options.debug ? 'npm run build:debug' : 'npm run build';
+    /**
+     * 解析目标架构
+     */
+    resolveTargetArch(requestedArch) {
+        if (requestedArch === 'auto' || !requestedArch) {
+            return process.arch;
+        }
+        return requestedArch;
+    }
+    /**
+     * 获取Tauri构建目标
+     */
+    getTauriTarget(arch, platform = process.platform) {
+        const platformMappings = BaseBuilder.ARCH_MAPPINGS[platform];
+        if (!platformMappings)
+            return null;
+        return platformMappings[arch] || null;
+    }
+    /**
+     * 获取架构显示名称（用于文件名）
+     */
+    getArchDisplayName(arch) {
+        return BaseBuilder.ARCH_DISPLAY_NAMES[arch] || arch;
+    }
+    /**
+     * 构建基础构建命令
+     */
+    buildBaseCommand(packageManager, configPath, target) {
+        const baseCommand = this.options.debug
+            ? `${packageManager} run build:debug`
+            : `${packageManager} run build`;
+        const argSeparator = packageManager === 'npm' ? ' --' : '';
+        let fullCommand = `${baseCommand}${argSeparator} -c "${configPath}"`;
+        if (target) {
+            fullCommand += ` --target ${target}`;
+        }
+        return fullCommand;
+    }
+    /**
+     * 获取构建特性列表
+     */
+    getBuildFeatures() {
+        const features = ['cli-build'];
+        // Add macos-proxy feature for modern macOS (Darwin 23+ = macOS 14+)
+        if (IS_MAC) {
+            const macOSVersion = this.getMacOSMajorVersion();
+            if (macOSVersion >= 23) {
+                features.push('macos-proxy');
+            }
+        }
+        return features;
+    }
+    getBuildCommand(packageManager = 'pnpm') {
+        // Use temporary config directory to avoid modifying source files
+        const configPath = path.join(npmDirectory, 'src-tauri', '.pake', 'tauri.conf.json');
+        let fullCommand = this.buildBaseCommand(packageManager, configPath);
+        // For macOS, use app bundles by default unless DMG is explicitly requested
+        if (IS_MAC && this.options.targets === 'app') {
+            fullCommand += ' --bundles app';
+        }
+        // Add features
+        const features = this.getBuildFeatures();
+        if (features.length > 0) {
+            fullCommand += ` --features ${features.join(',')}`;
+        }
+        return fullCommand;
+    }
+    getMacOSMajorVersion() {
+        try {
+            const os = require('os');
+            const release = os.release();
+            const majorVersion = parseInt(release.split('.')[0], 10);
+            return majorVersion;
+        }
+        catch (error) {
+            return 0; // Disable proxy feature if version detection fails
+        }
     }
     getBasePath() {
         const basePath = this.options.debug ? 'debug' : 'release';
         return `src-tauri/target/${basePath}/bundle/`;
     }
     getBuildAppPath(npmDirectory, fileName, fileType) {
-        return path.join(npmDirectory, this.getBasePath(), fileType.toLowerCase(), `${fileName}.${fileType}`);
+        // For app bundles on macOS, the directory is 'macos', not 'app'
+        const bundleDir = fileType.toLowerCase() === 'app' ? 'macos' : fileType.toLowerCase();
+        return path.join(npmDirectory, this.getBasePath(), bundleDir, `${fileName}.${fileType}`);
     }
 }
+BaseBuilder.packageManagerCache = null;
+// 架构映射配置
+BaseBuilder.ARCH_MAPPINGS = {
+    darwin: {
+        arm64: 'aarch64-apple-darwin',
+        x64: 'x86_64-apple-darwin',
+        universal: 'universal-apple-darwin',
+    },
+    win32: {
+        arm64: 'aarch64-pc-windows-msvc',
+        x64: 'x86_64-pc-windows-msvc',
+    },
+    linux: {
+        arm64: 'aarch64-unknown-linux-gnu',
+        x64: 'x86_64-unknown-linux-gnu',
+    },
+};
+// 架构名称映射（用于文件名生成）
+BaseBuilder.ARCH_DISPLAY_NAMES = {
+    arm64: 'aarch64',
+    x64: 'x64',
+    universal: 'universal',
+};
 
 class MacBuilder extends BaseBuilder {
     constructor(options) {
         super(options);
-        this.options.targets = 'dmg';
+        // Store the original targets value for architecture selection
+        // For macOS, targets can be architecture names or format names
+        // Filter out non-architecture values
+        const validArchs = ['intel', 'apple', 'universal', 'auto', 'x64', 'arm64'];
+        this.buildArch = validArchs.includes(options.targets || '')
+            ? options.targets
+            : 'auto';
+        // Use DMG by default for distribution
+        // Only create app bundles for testing to avoid user interaction
+        if (process.env.PAKE_CREATE_APP === '1') {
+            this.buildFormat = 'app';
+        }
+        else {
+            this.buildFormat = 'dmg';
+        }
+        // Set targets to format for Tauri
+        this.options.targets = this.buildFormat;
     }
     getFileName() {
         const { name } = this.options;
+        // For app bundles, use simple name without version/arch
+        if (this.buildFormat === 'app') {
+            return name;
+        }
+        // For DMG files, use versioned filename
         let arch;
-        if (this.options.multiArch) {
+        if (this.buildArch === 'universal' || this.options.multiArch) {
             arch = 'universal';
         }
+        else if (this.buildArch === 'apple') {
+            arch = 'aarch64';
+        }
+        else if (this.buildArch === 'intel') {
+            arch = 'x64';
+        }
         else {
-            arch = process.arch === 'arm64' ? 'aarch64' : process.arch;
+            // Auto-detect based on current architecture
+            arch = this.getArchDisplayName(this.resolveTargetArch(this.buildArch));
         }
         return `${name}_${tauriConfig.version}_${arch}`;
     }
-    getBuildCommand() {
-        return this.options.multiArch ? 'npm run build:mac' : super.getBuildCommand();
+    getActualArch() {
+        if (this.buildArch === 'universal' || this.options.multiArch) {
+            return 'universal';
+        }
+        else if (this.buildArch === 'apple') {
+            return 'arm64';
+        }
+        else if (this.buildArch === 'intel') {
+            return 'x64';
+        }
+        return this.resolveTargetArch(this.buildArch);
+    }
+    getBuildCommand(packageManager = 'pnpm') {
+        const configPath = path.join('src-tauri', '.pake', 'tauri.conf.json');
+        const actualArch = this.getActualArch();
+        const buildTarget = this.getTauriTarget(actualArch, 'darwin');
+        if (!buildTarget) {
+            throw new Error(`Unsupported architecture: ${actualArch} for macOS`);
+        }
+        let fullCommand = this.buildBaseCommand(packageManager, configPath, buildTarget);
+        // Add features
+        const features = this.getBuildFeatures();
+        if (features.length > 0) {
+            fullCommand += ` --features ${features.join(',')}`;
+        }
+        return fullCommand;
     }
     getBasePath() {
-        return this.options.multiArch
-            ? 'src-tauri/target/universal-apple-darwin/release/bundle'
-            : super.getBasePath();
+        const basePath = this.options.debug ? 'debug' : 'release';
+        const actualArch = this.getActualArch();
+        const target = this.getTauriTarget(actualArch, 'darwin');
+        return `src-tauri/target/${target}/${basePath}/bundle`;
     }
 }
 
 class WinBuilder extends BaseBuilder {
     constructor(options) {
         super(options);
-        this.options.targets = 'msi';
+        this.buildFormat = 'msi';
+        // For Windows, targets can be architecture names or format names
+        // Filter out non-architecture values
+        const validArchs = ['x64', 'arm64', 'auto'];
+        this.buildArch = validArchs.includes(options.targets || '')
+            ? this.resolveTargetArch(options.targets)
+            : this.resolveTargetArch('auto');
+        this.options.targets = this.buildFormat;
     }
     getFileName() {
         const { name } = this.options;
-        const { arch } = process;
         const language = tauriConfig.bundle.windows.wix.language[0];
-        return `${name}_${tauriConfig.version}_${arch}_${language}`;
+        const targetArch = this.getArchDisplayName(this.buildArch);
+        return `${name}_${tauriConfig.version}_${targetArch}_${language}`;
+    }
+    getBuildCommand(packageManager = 'pnpm') {
+        const configPath = path.join('src-tauri', '.pake', 'tauri.conf.json');
+        const buildTarget = this.getTauriTarget(this.buildArch, 'win32');
+        if (!buildTarget) {
+            throw new Error(`Unsupported architecture: ${this.buildArch} for Windows`);
+        }
+        let fullCommand = this.buildBaseCommand(packageManager, configPath, buildTarget);
+        // Add features
+        const features = this.getBuildFeatures();
+        if (features.length > 0) {
+            fullCommand += ` --features ${features.join(',')}`;
+        }
+        return fullCommand;
+    }
+    getBasePath() {
+        const basePath = this.options.debug ? 'debug' : 'release';
+        const target = this.getTauriTarget(this.buildArch, 'win32');
+        return `src-tauri/target/${target}/${basePath}/bundle/`;
     }
 }
 
 class LinuxBuilder extends BaseBuilder {
     constructor(options) {
         super(options);
+        // Parse target format and architecture
+        const target = options.targets || 'deb';
+        if (target.includes('-arm64')) {
+            this.buildFormat = target.replace('-arm64', '');
+            this.buildArch = 'arm64';
+        }
+        else {
+            this.buildFormat = target;
+            this.buildArch = this.resolveTargetArch('auto');
+        }
+        // Set targets to format for Tauri
+        this.options.targets = this.buildFormat;
     }
     getFileName() {
         const { name, targets } = this.options;
         const version = tauriConfig.version;
-        let arch = process.arch === 'x64' ? 'amd64' : process.arch;
-        if (arch === 'arm64' && (targets === 'rpm' || targets === 'appimage')) {
-            arch = 'aarch64';
+        // Determine architecture display name
+        let arch;
+        if (this.buildArch === 'arm64') {
+            arch = targets === 'rpm' || targets === 'appimage' ? 'aarch64' : 'arm64';
+        }
+        else {
+            // Auto-detect or default to current architecture
+            const resolvedArch = this.buildArch === 'x64' ? 'amd64' : this.buildArch;
+            arch = resolvedArch;
+            if (resolvedArch === 'arm64' &&
+                (targets === 'rpm' || targets === 'appimage')) {
+                arch = 'aarch64';
+            }
         }
         // The RPM format uses different separators and version number formats
         if (targets === 'rpm') {
@@ -748,6 +988,28 @@ class LinuxBuilder extends BaseBuilder {
                 await this.buildAndCopy(url, target);
             }
         }
+    }
+    getBuildCommand(packageManager = 'pnpm') {
+        const configPath = path.join('src-tauri', '.pake', 'tauri.conf.json');
+        // Only add target if it's ARM64
+        const buildTarget = this.buildArch === 'arm64'
+            ? this.getTauriTarget(this.buildArch, 'linux')
+            : undefined;
+        let fullCommand = this.buildBaseCommand(packageManager, configPath, buildTarget);
+        // Add features
+        const features = this.getBuildFeatures();
+        if (features.length > 0) {
+            fullCommand += ` --features ${features.join(',')}`;
+        }
+        return fullCommand;
+    }
+    getBasePath() {
+        const basePath = this.options.debug ? 'debug' : 'release';
+        if (this.buildArch === 'arm64') {
+            const target = this.getTauriTarget(this.buildArch, 'linux');
+            return `src-tauri/target/${target}/${basePath}/bundle/`;
+        }
+        return super.getBasePath();
     }
     getFileType(target) {
         if (target === 'appimage') {
@@ -778,7 +1040,6 @@ const DEFAULT_PAKE_OPTIONS = {
     height: 780,
     width: 1200,
     fullscreen: false,
-    resizable: true,
     hideTitleBar: false,
     alwaysOnTop: false,
     appVersion: '1.0.0',
@@ -791,68 +1052,280 @@ const DEFAULT_PAKE_OPTIONS = {
     targets: 'deb',
     useLocalFile: false,
     systemTrayIcon: '',
-    proxyUrl: "",
+    proxyUrl: '',
     debug: false,
     inject: [],
     installerLanguage: 'en-US',
+    hideOnClose: true,
+    incognito: false,
+    wasm: false,
 };
 
 async function checkUpdateTips() {
-    updateNotifier({ pkg: packageJson, updateCheckInterval: 1000 * 60 }).notify({ isGlobal: true });
+    updateNotifier({ pkg: packageJson, updateCheckInterval: 1000 * 60 }).notify({
+        isGlobal: true,
+    });
 }
 
-async function handleIcon(options) {
-    if (options.icon) {
-        if (options.icon.startsWith('http')) {
-            return downloadIcon(options.icon);
-        }
-        else {
-            return path.resolve(options.icon);
-        }
-    }
-    else {
-        logger.warn('✼ No icon given, default in use. For a custom icon, use --icon option.');
-        const iconPath = IS_WIN
-            ? 'src-tauri/png/icon_256.ico'
-            : IS_LINUX
-                ? 'src-tauri/png/icon_512.png'
-                : 'src-tauri/icons/icon.icns';
-        return path.join(npmDirectory, iconPath);
-    }
-}
-async function downloadIcon(iconUrl) {
-    const spinner = getSpinner('Downloading icon...');
+// Constants
+const ICON_CONFIG = {
+    minFileSize: 100,
+    downloadTimeout: 10000,
+    supportedFormats: ['png', 'ico', 'jpeg', 'jpg', 'webp'],
+    whiteBackground: { r: 255, g: 255, b: 255 },
+};
+// API Configuration
+const API_TOKENS = {
+    // cspell:disable-next-line
+    logoDev: ['pk_JLLMUKGZRpaG5YclhXaTkg', 'pk_Ph745P8mQSeYFfW2Wk039A'],
+    // cspell:disable-next-line
+    brandfetch: ['1idqvJC0CeFSeyp3Yf7', '1idej-yhU_ThggIHFyG'],
+};
+/**
+ * Adds white background to transparent icons only
+ */
+async function preprocessIcon(inputPath) {
     try {
-        const iconResponse = await axios.get(iconUrl, { responseType: 'arraybuffer' });
-        const iconData = await iconResponse.data;
-        if (!iconData) {
-            return null;
-        }
-        const fileDetails = await fileTypeFromBuffer(iconData);
-        if (!fileDetails) {
-            return null;
-        }
-        const { path: tempPath } = await dir();
-        let iconPath = `${tempPath}/icon.${fileDetails.ext}`;
-        // Fix this for linux
-        if (IS_LINUX) {
-            iconPath = 'png/linux_temp.png';
-            await fsExtra.outputFile(`${npmDirectory}/src-tauri/${iconPath}`, iconData);
-        }
-        else {
-            await fsExtra.outputFile(iconPath, iconData);
-        }
-        await fsExtra.outputFile(iconPath, iconData);
-        spinner.succeed(chalk.green('Icon downloaded successfully!'));
-        return iconPath;
+        const metadata = await sharp(inputPath).metadata();
+        if (metadata.channels !== 4)
+            return inputPath; // No transparency
+        const { path: tempDir } = await dir();
+        const outputPath = path.join(tempDir, 'icon-with-background.png');
+        await sharp({
+            create: {
+                width: metadata.width || 512,
+                height: metadata.height || 512,
+                channels: 3,
+                background: ICON_CONFIG.whiteBackground,
+            },
+        })
+            .composite([{ input: inputPath }])
+            .png()
+            .toFile(outputPath);
+        return outputPath;
     }
     catch (error) {
-        spinner.fail(chalk.red('Icon download failed!'));
-        if (error.response && error.response.status === 404) {
+        logger.warn(`Failed to add background to icon: ${error.message}`);
+        return inputPath;
+    }
+}
+/**
+ * Converts icon to platform-specific format
+ */
+async function convertIconFormat(inputPath, appName) {
+    try {
+        if (!(await fsExtra.pathExists(inputPath)))
+            return null;
+        const { path: outputDir } = await dir();
+        const platformOutputDir = path.join(outputDir, 'converted-icons');
+        await fsExtra.ensureDir(platformOutputDir);
+        const processedInputPath = await preprocessIcon(inputPath);
+        const iconName = appName.toLowerCase();
+        // Generate platform-specific format
+        if (IS_WIN) {
+            await icongen(processedInputPath, platformOutputDir, {
+                report: false,
+                ico: { name: `${iconName}_256`, sizes: [256] },
+            });
+            return path.join(platformOutputDir, `${iconName}_256.ico`);
+        }
+        if (IS_LINUX) {
+            const outputPath = path.join(platformOutputDir, `${iconName}_512.png`);
+            await fsExtra.copy(processedInputPath, outputPath);
+            return outputPath;
+        }
+        // macOS
+        await icongen(processedInputPath, platformOutputDir, {
+            report: false,
+            icns: { name: iconName, sizes: [16, 32, 64, 128, 256, 512, 1024] },
+        });
+        const outputPath = path.join(platformOutputDir, `${iconName}.icns`);
+        return (await fsExtra.pathExists(outputPath)) ? outputPath : null;
+    }
+    catch (error) {
+        logger.warn(`Icon format conversion failed: ${error.message}`);
+        return null;
+    }
+}
+async function handleIcon(options, url) {
+    if (options.icon) {
+        if (options.icon.startsWith('http')) {
+            const downloadedPath = await downloadIcon(options.icon);
+            if (downloadedPath && options.name) {
+                // Convert downloaded icon to platform-specific format
+                const convertedPath = await convertIconFormat(downloadedPath, options.name);
+                if (convertedPath) {
+                    // For Windows, copy the converted ico to the expected location
+                    if (IS_WIN && convertedPath.endsWith('.ico')) {
+                        const finalIconPath = path.join(npmDirectory, `src-tauri/png/${options.name.toLowerCase()}_256.ico`);
+                        await fsExtra.ensureDir(path.dirname(finalIconPath));
+                        await fsExtra.copy(convertedPath, finalIconPath);
+                        return finalIconPath;
+                    }
+                    return convertedPath;
+                }
+            }
+            return downloadedPath;
+        }
+        return path.resolve(options.icon);
+    }
+    // Try to get favicon from website if URL is provided
+    if (url && url.startsWith('http') && options.name) {
+        const faviconPath = await tryGetFavicon(url, options.name);
+        if (faviconPath)
+            return faviconPath;
+    }
+    logger.info('✼ No icon provided, using default icon.');
+    // For Windows, ensure we have proper fallback handling
+    if (IS_WIN) {
+        const defaultIcoPath = path.join(npmDirectory, 'src-tauri/png/icon_256.ico');
+        const defaultPngPath = path.join(npmDirectory, 'src-tauri/png/icon_512.png');
+        // First try default ico
+        if (await fsExtra.pathExists(defaultIcoPath)) {
+            return defaultIcoPath;
+        }
+        // If ico doesn't exist, try to convert from png
+        if (await fsExtra.pathExists(defaultPngPath)) {
+            logger.info('✼ Default ico not found, converting from png...');
+            try {
+                const convertedPath = await convertIconFormat(defaultPngPath, 'icon');
+                if (convertedPath && (await fsExtra.pathExists(convertedPath))) {
+                    // Copy converted icon to the expected location for Windows
+                    const finalIconPath = path.join(npmDirectory, 'src-tauri/png/icon_256.ico');
+                    await fsExtra.ensureDir(path.dirname(finalIconPath));
+                    await fsExtra.copy(convertedPath, finalIconPath);
+                    return finalIconPath;
+                }
+            }
+            catch (error) {
+                logger.warn(`Failed to convert default png to ico: ${error.message}`);
+            }
+        }
+        // Last resort: return png path if it exists (Windows can handle png in some cases)
+        if (await fsExtra.pathExists(defaultPngPath)) {
+            logger.warn('✼ Using png as fallback for Windows (may cause issues).');
+            return defaultPngPath;
+        }
+        // If nothing exists, return empty string to let merge.ts handle default icon
+        logger.warn('✼ No default icon found, will use pake default.');
+        return '';
+    }
+    const iconPath = IS_LINUX
+        ? 'src-tauri/png/icon_512.png'
+        : 'src-tauri/icons/icon.icns';
+    return path.join(npmDirectory, iconPath);
+}
+/**
+ * Generates icon service URLs for a domain
+ */
+function generateIconServiceUrls(domain) {
+    const logoDevUrls = API_TOKENS.logoDev
+        .sort(() => Math.random() - 0.5)
+        .map((token) => `https://img.logo.dev/${domain}?token=${token}&format=png&size=256`);
+    const brandfetchUrls = API_TOKENS.brandfetch
+        .sort(() => Math.random() - 0.5)
+        .map((key) => `https://cdn.brandfetch.io/${domain}/w/400/h/400?c=${key}`);
+    return [
+        ...logoDevUrls,
+        ...brandfetchUrls,
+        `https://logo.clearbit.com/${domain}?size=256`,
+        `https://logo.uplead.com/${domain}`,
+        `https://www.google.com/s2/favicons?domain=${domain}&sz=256`,
+        `https://favicon.is/${domain}`,
+        `https://icons.duckduckgo.com/ip3/${domain}.ico`,
+        `https://icon.horse/icon/${domain}`,
+        `https://${domain}/favicon.ico`,
+        `https://www.${domain}/favicon.ico`,
+        `https://${domain}/apple-touch-icon.png`,
+        `https://${domain}/apple-touch-icon-precomposed.png`,
+    ];
+}
+/**
+ * Attempts to fetch favicon from website
+ */
+async function tryGetFavicon(url, appName) {
+    try {
+        const domain = new URL(url).hostname;
+        const spinner = getSpinner(`Fetching icon from ${domain}...`);
+        const serviceUrls = generateIconServiceUrls(domain);
+        // Use shorter timeout for CI environments
+        const isCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+        const downloadTimeout = isCI ? 5000 : ICON_CONFIG.downloadTimeout;
+        for (const serviceUrl of serviceUrls) {
+            try {
+                const faviconPath = await downloadIcon(serviceUrl, false, downloadTimeout);
+                if (!faviconPath)
+                    continue;
+                const convertedPath = await convertIconFormat(faviconPath, appName);
+                if (convertedPath) {
+                    // For Windows, copy the converted ico to the expected location
+                    if (IS_WIN && convertedPath.endsWith('.ico')) {
+                        const finalIconPath = path.join(npmDirectory, `src-tauri/png/${appName.toLowerCase()}_256.ico`);
+                        await fsExtra.ensureDir(path.dirname(finalIconPath));
+                        await fsExtra.copy(convertedPath, finalIconPath);
+                        spinner.succeed(chalk.green('Icon fetched and converted successfully!'));
+                        return finalIconPath;
+                    }
+                    spinner.succeed(chalk.green('Icon fetched and converted successfully!'));
+                    return convertedPath;
+                }
+            }
+            catch (error) {
+                // Log specific errors in CI for debugging
+                if (isCI) {
+                    logger.debug(`Icon service ${serviceUrl} failed: ${error.message}`);
+                }
+                continue;
+            }
+        }
+        spinner.warn(`No favicon found for ${domain}. Using default.`);
+        return null;
+    }
+    catch (error) {
+        logger.warn(`Failed to fetch favicon: ${error.message}`);
+        return null;
+    }
+}
+/**
+ * Downloads icon from URL
+ */
+async function downloadIcon(iconUrl, showSpinner = true, customTimeout) {
+    try {
+        const response = await axios.get(iconUrl, {
+            responseType: 'arraybuffer',
+            timeout: customTimeout || ICON_CONFIG.downloadTimeout,
+        });
+        const iconData = response.data;
+        if (!iconData || iconData.byteLength < ICON_CONFIG.minFileSize)
+            return null;
+        const fileDetails = await fileTypeFromBuffer(iconData);
+        if (!fileDetails ||
+            !ICON_CONFIG.supportedFormats.includes(fileDetails.ext)) {
             return null;
         }
-        throw error;
+        return await saveIconFile(iconData, fileDetails.ext);
     }
+    catch (error) {
+        if (showSpinner && !(error.response?.status === 404)) {
+            throw error;
+        }
+        return null;
+    }
+}
+/**
+ * Saves icon file to temporary location
+ */
+async function saveIconFile(iconData, extension) {
+    const buffer = Buffer.from(iconData);
+    if (IS_LINUX) {
+        const iconPath = 'png/linux_temp.png';
+        await fsExtra.outputFile(`${npmDirectory}/src-tauri/${iconPath}`, buffer);
+        return iconPath;
+    }
+    const { path: tempPath } = await dir();
+    const iconPath = `${tempPath}/icon.${extension}`;
+    await fsExtra.outputFile(iconPath, buffer);
+    return iconPath;
 }
 
 // Extracts the domain from a given URL.
@@ -886,11 +1359,12 @@ function appendProtocol(inputUrl) {
 // Normalizes the URL by ensuring it has a protocol and is valid.
 function normalizeUrl(urlToNormalize) {
     const urlWithProtocol = appendProtocol(urlToNormalize);
-    if (isUrl(urlWithProtocol)) {
+    try {
+        new URL(urlWithProtocol);
         return urlWithProtocol;
     }
-    else {
-        throw new Error(`Your url "${urlWithProtocol}" is invalid`);
+    catch (err) {
+        throw new Error(`Your url "${urlWithProtocol}" is invalid: ${err.message}`);
     }
 }
 
@@ -900,8 +1374,8 @@ function resolveAppName(name, platform) {
 }
 function isValidName(name, platform) {
     const platformRegexMapping = {
-        linux: /^[a-z0-9]+(-[a-z0-9]+)*$/,
-        default: /^[a-zA-Z0-9]+([-a-zA-Z0-9])*$/,
+        linux: /^[a-z0-9][a-z0-9-]*$/,
+        default: /^[a-zA-Z0-9][a-zA-Z0-9- ]*$/,
     };
     const reg = platformRegexMapping[platform] || platformRegexMapping.default;
     return !!name && reg.test(name);
@@ -917,9 +1391,14 @@ async function handleOptions(options, url) {
         const namePrompt = await promptText(promptMessage, defaultName);
         name = namePrompt || defaultName;
     }
+    // Handle platform-specific name formatting
+    if (name && platform === 'linux') {
+        // Convert to lowercase and replace spaces with dashes for Linux
+        name = name.toLowerCase().replace(/\s+/g, '-');
+    }
     if (!isValidName(name, platform)) {
-        const LINUX_NAME_ERROR = `✕ name should only include lowercase letters, numbers, and dashes, and must contain at least one lowercase letter. Examples: com-123-xxx, 123pan, pan123, weread, we-read.`;
-        const DEFAULT_NAME_ERROR = `✕ Name should only include letters and numbers, and dashes (dashes must not at the beginning), and must contain at least one letter. Examples: 123pan, 123Pan, Pan123, weread, WeRead, WERead, we-read.`;
+        const LINUX_NAME_ERROR = `✕ Name should only include lowercase letters, numbers, and dashes (not leading dashes). Examples: com-123-xxx, 123pan, pan123, weread, we-read, 123.`;
+        const DEFAULT_NAME_ERROR = `✕ Name should only include letters, numbers, dashes, and spaces (not leading dashes and spaces). Examples: 123pan, 123Pan, Pan123, weread, WeRead, WERead, we-read, We Read, 123.`;
         const errorMsg = platform === 'linux' ? LINUX_NAME_ERROR : DEFAULT_NAME_ERROR;
         logger.error(errorMsg);
         if (isActions) {
@@ -935,7 +1414,8 @@ async function handleOptions(options, url) {
         name,
         identifier: getIdentifier(url),
     };
-    appOptions.icon = await handleIcon(appOptions);
+    const iconPath = await handleIcon(appOptions, url);
+    appOptions.icon = iconPath || undefined;
     return appOptions;
 }
 
@@ -966,9 +1446,15 @@ ${green('| |_) / _` | |/ / _ \\')}
 ${green('|  __/ (_| |   <  __/')}  ${yellow('https://github.com/tw93/pake')}
 ${green('|_|   \\__,_|_|\\_\\___|  can turn any webpage into a desktop app with Rust.')}
 `;
-program.addHelpText('beforeAll', logo).usage(`[url] [options]`).showHelpAfterError();
+program
+    .addHelpText('beforeAll', logo)
+    .usage(`[url] [options]`)
+    .showHelpAfterError();
 program
     .argument('[url]', 'The web URL you want to package', validateUrlInput)
+    // Refer to https://github.com/tj/commander.js#custom-option-processing, turn string array into a string connected with custom connectors.
+    // If the platform is Linux, use `-` as the connector, and convert all characters to lowercase.
+    // For example, Google Translate will become google-translate.
     .option('--name <string>', 'Application name')
     .option('--icon <string>', 'Application icon', DEFAULT_PAKE_OPTIONS.icon)
     .option('--width <number>', 'Window width', validateNumberInput, DEFAULT_PAKE_OPTIONS.width)
@@ -977,37 +1463,73 @@ program
     .option('--fullscreen', 'Start in full screen', DEFAULT_PAKE_OPTIONS.fullscreen)
     .option('--hide-title-bar', 'For Mac, hide title bar', DEFAULT_PAKE_OPTIONS.hideTitleBar)
     .option('--multi-arch', 'For Mac, both Intel and M1', DEFAULT_PAKE_OPTIONS.multiArch)
-    .option('--inject <url>', 'Injection of .js or .css files', DEFAULT_PAKE_OPTIONS.inject)
+    .option('--inject <./style.css,./script.js,...>', 'Injection of .js or .css files', (val, previous) => {
+    if (!val)
+        return DEFAULT_PAKE_OPTIONS.inject;
+    // Split by comma and trim whitespace, filter out empty strings
+    const files = val
+        .split(',')
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0);
+    // If previous values exist (from multiple --inject options), merge them
+    return previous ? [...previous, ...files] : files;
+}, DEFAULT_PAKE_OPTIONS.inject)
     .option('--debug', 'Debug build and more output', DEFAULT_PAKE_OPTIONS.debug)
-    .addOption(new Option('--proxy-url <url>', 'Proxy URL for all network requests').default(DEFAULT_PAKE_OPTIONS.proxyUrl).hideHelp())
-    .addOption(new Option('--user-agent <string>', 'Custom user agent').default(DEFAULT_PAKE_OPTIONS.userAgent).hideHelp())
-    .addOption(new Option('--targets <string>', 'For Linux, option "deb" or "appimage"').default(DEFAULT_PAKE_OPTIONS.targets).hideHelp())
-    .addOption(new Option('--app-version <string>', 'App version, the same as package.json version').default(DEFAULT_PAKE_OPTIONS.appVersion).hideHelp())
-    .addOption(new Option('--always-on-top', 'Always on the top level').default(DEFAULT_PAKE_OPTIONS.alwaysOnTop).hideHelp())
-    .addOption(new Option('--dark-mode', 'Force Mac app to use dark mode').default(DEFAULT_PAKE_OPTIONS.darkMode).hideHelp())
-    .addOption(new Option('--disabled-web-shortcuts', 'Disabled webPage shortcuts').default(DEFAULT_PAKE_OPTIONS.disabledWebShortcuts).hideHelp())
-    .addOption(new Option('--activation-shortcut <string>', 'Shortcut key to active App').default(DEFAULT_PAKE_OPTIONS.activationShortcut).hideHelp())
-    .addOption(new Option('--show-system-tray', 'Show system tray in app').default(DEFAULT_PAKE_OPTIONS.showSystemTray).hideHelp())
-    .addOption(new Option('--system-tray-icon <string>', 'Custom system tray icon').default(DEFAULT_PAKE_OPTIONS.systemTrayIcon).hideHelp())
-    .addOption(new Option('--installer-language <string>', 'Installer language').default(DEFAULT_PAKE_OPTIONS.installerLanguage).hideHelp())
+    .addOption(new Option('--proxy-url <url>', 'Proxy URL for all network requests (http://, https://, socks5://)')
+    .default(DEFAULT_PAKE_OPTIONS.proxyUrl)
+    .hideHelp())
+    .addOption(new Option('--user-agent <string>', 'Custom user agent')
+    .default(DEFAULT_PAKE_OPTIONS.userAgent)
+    .hideHelp())
+    .addOption(new Option('--targets <string>', 'Build target: Linux: "deb", "rpm", "appimage", "deb-arm64", "rpm-arm64", "appimage-arm64"; Windows: "x64", "arm64"; macOS: "intel", "apple", "universal"').default(DEFAULT_PAKE_OPTIONS.targets))
+    .addOption(new Option('--app-version <string>', 'App version, the same as package.json version')
+    .default(DEFAULT_PAKE_OPTIONS.appVersion)
+    .hideHelp())
+    .addOption(new Option('--always-on-top', 'Always on the top level')
+    .default(DEFAULT_PAKE_OPTIONS.alwaysOnTop)
+    .hideHelp())
+    .addOption(new Option('--dark-mode', 'Force Mac app to use dark mode')
+    .default(DEFAULT_PAKE_OPTIONS.darkMode)
+    .hideHelp())
+    .addOption(new Option('--disabled-web-shortcuts', 'Disabled webPage shortcuts')
+    .default(DEFAULT_PAKE_OPTIONS.disabledWebShortcuts)
+    .hideHelp())
+    .addOption(new Option('--activation-shortcut <string>', 'Shortcut key to active App')
+    .default(DEFAULT_PAKE_OPTIONS.activationShortcut)
+    .hideHelp())
+    .addOption(new Option('--show-system-tray', 'Show system tray in app')
+    .default(DEFAULT_PAKE_OPTIONS.showSystemTray)
+    .hideHelp())
+    .addOption(new Option('--system-tray-icon <string>', 'Custom system tray icon')
+    .default(DEFAULT_PAKE_OPTIONS.systemTrayIcon)
+    .hideHelp())
+    .addOption(new Option('--hide-on-close', 'Hide window on close instead of exiting')
+    .default(DEFAULT_PAKE_OPTIONS.hideOnClose)
+    .hideHelp())
+    .addOption(new Option('--title <string>', 'Window title').hideHelp())
+    .addOption(new Option('--incognito', 'Launch app in incognito/private mode')
+    .default(DEFAULT_PAKE_OPTIONS.incognito)
+    .hideHelp())
+    .addOption(new Option('--wasm', 'Enable WebAssembly support (Flutter Web, etc.)')
+    .default(DEFAULT_PAKE_OPTIONS.wasm)
+    .hideHelp())
+    .addOption(new Option('--installer-language <string>', 'Installer language')
+    .default(DEFAULT_PAKE_OPTIONS.installerLanguage)
+    .hideHelp())
     .version(packageJson.version, '-v, --version', 'Output the current version')
     .action(async (url, options) => {
     await checkUpdateTips();
     if (!url) {
-        program.outputHelp(str => {
-            return str
-                .split('\n')
-                .filter(line => !/((-h,|--help)|((-v|-V),|--version))\s+.+$/.test(line))
-                .join('\n');
+        program.help({
+            error: false,
         });
-        process.exit(0);
+        return;
     }
     log.setDefaultLevel('info');
     if (options.debug) {
         log.setLevel('debug');
     }
     const appOptions = await handleOptions(options, url);
-    log.debug('PakeAppOptions', appOptions);
     const builder = BuilderProvider.create(appOptions);
     await builder.prepare();
     await builder.build(url);
