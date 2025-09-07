@@ -278,17 +278,17 @@ Pake の開発はこれらのハッカーたちなしにはあり得ませんで
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/YangguangZhou">
-                    <img src="https://avatars.githubusercontent.com/u/61733195?v=4" width="90;" alt="YangguangZhou"/>
-                    <br />
-                    <sub><b>Jerry Zhou</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/AielloChan">
                     <img src="https://avatars.githubusercontent.com/u/7900765?v=4" width="90;" alt="AielloChan"/>
                     <br />
                     <sub><b>Aiello</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/YangguangZhou">
+                    <img src="https://avatars.githubusercontent.com/u/61733195?v=4" width="90;" alt="YangguangZhou"/>
+                    <br />
+                    <sub><b>Jerry Zhou</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -373,82 +373,17 @@ Pake の開発はこれらのハッカーたちなしにはあり得ませんで
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/eltociear">
+                    <img src="https://avatars.githubusercontent.com/u/22633385?v=4" width="90;" alt="eltociear"/>
+                    <br />
+                    <sub><b>Ikko Eltociear Ashimine</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/GoodbyeNJN">
                     <img src="https://avatars.githubusercontent.com/u/6856639?v=4" width="90;" alt="GoodbyeNJN"/>
                     <br />
                     <sub><b>GoodbyeNJN</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/hetz">
-                    <img src="https://avatars.githubusercontent.com/u/820141?v=4" width="90;" alt="hetz"/>
-                    <br />
-                    <sub><b>贺天卓</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/piaoyidage">
-                    <img src="https://avatars.githubusercontent.com/u/5135405?v=4" width="90;" alt="piaoyidage"/>
-                    <br />
-                    <sub><b>Ranger</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/liusishan">
-                    <img src="https://avatars.githubusercontent.com/u/33129823?v=4" width="90;" alt="liusishan"/>
-                    <br />
-                    <sub><b>Liusishan</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/liudonghua123">
-                    <img src="https://avatars.githubusercontent.com/u/2276718?v=4" width="90;" alt="liudonghua123"/>
-                    <br />
-                    <sub><b>Liudonghua</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/lakca">
-                    <img src="https://avatars.githubusercontent.com/u/16255922?v=4" width="90;" alt="lakca"/>
-                    <br />
-                    <sub><b>Null</b></sub>
-                </a>
-            </td>
-		</tr>
-		<tr>
-            <td align="center">
-                <a href="https://github.com/houhoz">
-                    <img src="https://avatars.githubusercontent.com/u/19684376?v=4" width="90;" alt="houhoz"/>
-                    <br />
-                    <sub><b>Hyzhao</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/geekvest">
-                    <img src="https://avatars.githubusercontent.com/u/126322776?v=4" width="90;" alt="geekvest"/>
-                    <br />
-                    <sub><b>Null</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/bocanhcam">
-                    <img src="https://avatars.githubusercontent.com/u/35592955?v=4" width="90;" alt="bocanhcam"/>
-                    <br />
-                    <sub><b>bocanhcam</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/beautifulrem">
-                    <img src="https://avatars.githubusercontent.com/u/98527099?v=4" width="90;" alt="beautifulrem"/>
-                    <br />
-                    <sub><b>Xie Ruiqi</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/princemaple">
-                    <img src="https://avatars.githubusercontent.com/u/1329716?v=4" width="90;" alt="princemaple"/>
-                    <br />
-                    <sub><b>Po Chen</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -459,14 +394,86 @@ Pake の開発はこれらのハッカーたちなしにはあり得ませんで
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/princemaple">
+                    <img src="https://avatars.githubusercontent.com/u/1329716?v=4" width="90;" alt="princemaple"/>
+                    <br />
+                    <sub><b>Po Chen</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/beautifulrem">
+                    <img src="https://avatars.githubusercontent.com/u/98527099?v=4" width="90;" alt="beautifulrem"/>
+                    <br />
+                    <sub><b>Xie Ruiqi</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/bocanhcam">
+                    <img src="https://avatars.githubusercontent.com/u/35592955?v=4" width="90;" alt="bocanhcam"/>
+                    <br />
+                    <sub><b>bocanhcam</b></sub>
+                </a>
+            </td>
+		</tr>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/geekvest">
+                    <img src="https://avatars.githubusercontent.com/u/126322776?v=4" width="90;" alt="geekvest"/>
+                    <br />
+                    <sub><b>Null</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/houhoz">
+                    <img src="https://avatars.githubusercontent.com/u/19684376?v=4" width="90;" alt="houhoz"/>
+                    <br />
+                    <sub><b>Hyzhao</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/lakca">
+                    <img src="https://avatars.githubusercontent.com/u/16255922?v=4" width="90;" alt="lakca"/>
+                    <br />
+                    <sub><b>Null</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/liudonghua123">
+                    <img src="https://avatars.githubusercontent.com/u/2276718?v=4" width="90;" alt="liudonghua123"/>
+                    <br />
+                    <sub><b>Liudonghua</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/liusishan">
+                    <img src="https://avatars.githubusercontent.com/u/33129823?v=4" width="90;" alt="liusishan"/>
+                    <br />
+                    <sub><b>Liusishan</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/piaoyidage">
+                    <img src="https://avatars.githubusercontent.com/u/5135405?v=4" width="90;" alt="piaoyidage"/>
+                    <br />
+                    <sub><b>Ranger</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/hetz">
+                    <img src="https://avatars.githubusercontent.com/u/820141?v=4" width="90;" alt="hetz"/>
+                    <br />
+                    <sub><b>贺天卓</b></sub>
+                </a>
+            </td>
+		</tr>
+		<tr>
+            <td align="center">
                 <a href="https://github.com/Jason6987">
                     <img src="https://avatars.githubusercontent.com/u/140222795?v=4" width="90;" alt="Jason6987"/>
                     <br />
                     <sub><b>Luminall</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/droid-Q">
                     <img src="https://avatars.githubusercontent.com/u/708277?v=4" width="90;" alt="droid-Q"/>
@@ -509,6 +516,8 @@ Pake の開発はこれらのハッカーたちなしにはあり得ませんで
                     <sub><b>Ayaka Neko</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/kidylee">
                     <img src="https://avatars.githubusercontent.com/u/841310?v=4" width="90;" alt="kidylee"/>
@@ -516,8 +525,6 @@ Pake の開発はこれらのハッカーたちなしにはあり得ませんで
                     <sub><b>An Li</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/imabutahersiddik">
                     <img src="https://avatars.githubusercontent.com/u/138387257?v=4" width="90;" alt="imabutahersiddik"/>
