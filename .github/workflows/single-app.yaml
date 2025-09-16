@@ -48,7 +48,7 @@ on:
 
 jobs:
   build:
-    name: ${{ inputs.title }} (${{ matrix.os }})
+    name: ${{ inputs.title }} (${{ matrix.build }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -76,7 +76,7 @@ jobs:
       - name: Setup Node.js Environment
         uses: ./.github/actions/setup-env
         with:
-          mode: node-only
+          mode: ${{ (matrix.build == 'linux' || matrix.build == 'macos') && 'build' || 'node' }}
 
       - name: Rust cache restore
         uses: actions/cache/restore@v4.2.0

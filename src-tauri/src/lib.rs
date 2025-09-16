@@ -41,7 +41,13 @@ pub fn run_app() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_notification::init())
-        .plugin(tauri_plugin_single_instance::init(|_, _, _| ()))
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            if let Some(window) = app.get_webview_window("pake") {
+                let _ = window.unminimize();
+                let _ = window.show();
+                let _ = window.set_focus();
+            }
+        }))
         .invoke_handler(tauri::generate_handler![
             download_file,
             download_file_by_binary,
@@ -64,6 +70,7 @@ pub fn run_app() {
         .on_window_event(move |_window, _event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = _event {
                 if hide_on_close {
+                    // Hide window when hide_on_close is enabled (regardless of tray status)
                     let window = _window.clone();
                     tauri::async_runtime::spawn(async move {
                         #[cfg(target_os = "macos")]
@@ -77,8 +84,10 @@ pub fn run_app() {
                         window.hide().unwrap();
                     });
                     api.prevent_close();
+                } else {
+                    // Exit app completely when hide_on_close is false
+                    std::process::exit(0);
                 }
-                // If hide_on_close is false, allow normal close behavior
             }
         })
         .run(tauri::generate_context!())

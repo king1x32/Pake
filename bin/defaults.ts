@@ -22,9 +22,11 @@ export const DEFAULT_PAKE_OPTIONS: PakeCliOptions = {
   debug: false,
   inject: [],
   installerLanguage: 'vi-VN',
-  hideOnClose: true,
+  hideOnClose: undefined, // Platform-specific: true for macOS, false for others
   incognito: false,
   wasm: false,
+  enableDragDrop: false,
+  keepBinary: false,
 };
 
 // Just for cli development

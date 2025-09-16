@@ -1,4 +1,8 @@
+# CLI Usage Guide
+
 <h4 align="right"><strong>English</strong> | <a href="cli-usage_CN.md">简体中文</a></h4>
+
+Complete command-line reference and basic usage for Pake CLI.
 
 ## Installation
 
@@ -28,50 +32,24 @@ echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-<details>
-<summary><strong>Considerations for Windows & Linux Users</strong></summary>
+**Prerequisites:**
 
-- **CRITICAL**: Consult [Tauri prerequisites](https://tauri.app/start/prerequisites/) before proceeding.
-- For Windows users (ensure that `Win10 SDK (10.0.19041.0)` and `Visual Studio build tool 2022 (>=17.2)` are installed), additional installations are required:
-  1. Microsoft Visual C++ 2015-2022 Redistributable (x64)
-  2. Microsoft Visual C++ 2015-2022 Redistributable (x86)
-  3. Microsoft Visual C++ 2012 Redistributable (x86) (optional)
-  4. Microsoft Visual C++ 2013 Redistributable (x86) (optional)
-  5. Microsoft Visual C++ 2008 Redistributable (x86) (optional)
-
-  **For Windows on ARM (ARM64) support**: Install the C++ ARM64 build tools in Visual Studio Installer under "Individual Components" → "MSVC v143 - VS 2022 C++ ARM64 build tools". The system will automatically detect ARM64 architecture and build native ARM64 binaries.
-
-- For Ubuntu users, execute the following commands to install the required libraries before compiling:
-
-  ```bash
-  sudo apt install libdbus-1-dev \
-      libsoup-3.0-dev \
-      libjavascriptcoregtk-4.1-dev \
-      libwebkit2gtk-4.1-dev \
-      build-essential \
-      curl \
-      wget \
-      libssl-dev \
-      libgtk-3-dev \
-      libayatana-appindicator3-dev \
-      librsvg2-dev \
-      gnome-video-effects \
-      gnome-video-effects-extra
-  ```
-
-</details>
+- Node.js ≥18.0.0
+- Rust ≥1.78.0 (installed automatically if missing)
+- **Windows/Linux**: See [system dependencies guide](advanced-usage.md#prerequisites) for platform-specific requirements
 
 ## Quick Start
 
 ```bash
-# Basic usage - just provide a URL
-pake https://weekly.tw93.fun --name "Weekly"
+# Basic usage - automatically fetches website icon
+pake https://github.com --name "GitHub"
 
-# With custom icon and window size (macOS example)
-pake https://weekly.tw93.fun --name "Weekly" --icon https://cdn.tw93.fun/pake/weekly.icns --width 1200 --height 800
+# Advanced usage with custom options
+pake https://weekly.tw93.fun --name "Weekly" --icon https://cdn.tw93.fun/pake/weekly.icns --width 1200 --height 800 --hide-title-bar
 
-# macOS immersive experience
-pake https://weekly.tw93.fun --name "Weekly" --hide-title-bar
+# Complete example with multiple options
+pake https://github.com --name "GitHub Desktop" --width 1400 --height 900 --show-system-tray --debug
+
 ```
 
 ## CLI Usage
@@ -94,14 +72,14 @@ The URL is the link to the web page you want to package or the path to a local H
 
 Various options are available for customization. Here are the most commonly used ones:
 
-| Option             | Description                    | Example                                        |
-| ------------------ | ------------------------------ | ---------------------------------------------- |
-| `--name`           | Application name               | `--name "Weekly"`                              |
-| `--icon`           | Application icon               | `--icon https://cdn.tw93.fun/pake/weekly.icns` |
-| `--width`          | Window width (default: 1200px) | `--width 1400`                                 |
-| `--height`         | Window height (default: 780px) | `--height 900`                                 |
-| `--hide-title-bar` | Immersive header (macOS only)  | `--hide-title-bar`                             |
-| `--debug`          | Enable development tools       | `--debug`                                      |
+| Option             | Description                                     | Example                                        |
+| ------------------ | ----------------------------------------------- | ---------------------------------------------- |
+| `--name`           | Application name                                | `--name "Weekly"`                              |
+| `--icon`           | Custom icon (optional, auto-fetch website icon) | `--icon https://cdn.tw93.fun/pake/weekly.icns` |
+| `--width`          | Window width (default: 1200px)                  | `--width 1400`                                 |
+| `--height`         | Window height (default: 780px)                  | `--height 900`                                 |
+| `--hide-title-bar` | Immersive header (macOS only)                   | `--hide-title-bar`                             |
+| `--debug`          | Enable development tools                        | `--debug`                                      |
 
 For complete options, see detailed sections below.
 
@@ -124,16 +102,22 @@ Specify the application name. If not provided, you will be prompted to enter it.
 
 #### [icon]
 
-Specify the application icon. Supports both local and remote files. If not provided, Pake will intelligently fetch the website's icon. For custom icons, visit [icon-icons](https://icon-icons.com) or [macOSicons](https://macosicons.com/#/).
+**Optional parameter**: If not provided, Pake will automatically fetch the website's icon and convert to the appropriate format. For custom icons, visit [icon-icons](https://icon-icons.com) or [macOSicons](https://macosicons.com/#/).
 
-- For macOS, use `.icns` format.
-- For Windows, use `.ico` format.
-- For Linux, use `.png` format.
+Supports both local and remote files, automatically converts to platform-specific formats:
+
+- macOS: `.icns` format
+- Windows: `.ico` format
+- Linux: `.png` format
 
 ```shell
 --icon <path>
 
 # Examples:
+# Without --icon parameter, auto-fetch website icon
+pake https://github.com --name GitHub
+
+# With custom icons
 --icon ./my-icon.png
 --icon https://cdn.tw93.fun/pake/weekly.icns  # Remote icon (.icns for macOS)
 ```
@@ -293,7 +277,7 @@ Specify the system tray icon. This is only effective when the system tray is ena
 
 #### [hide-on-close]
 
-Hide window instead of closing the application when clicking close button. Default is `true`.
+Hide window instead of closing the application when clicking close button. Platform-specific default: `true` for macOS, `false` for Windows/Linux.
 
 ```shell
 --hide-on-close
@@ -301,7 +285,7 @@ Hide window instead of closing the application when clicking close button. Defau
 
 #### [title]
 
-Set the window title bar text. If not specified, the window title will be empty.
+Set the window title bar text. macOS shows no title if not specified; Windows/Linux fallback to app name.
 
 ```shell
 --title <string>
@@ -331,6 +315,30 @@ This option adds necessary HTTP headers (`Cross-Origin-Opener-Policy: same-origi
 # Example: Package a Flutter Web app with WASM support
 pake https://flutter.dev --name FlutterApp --wasm
 ```
+
+#### [enable-drag-drop]
+
+Enable native drag and drop functionality within the application. Default is `false`. When enabled, allows drag and drop operations like reordering items, file uploads, and other interactive drag behaviors that work in regular browsers.
+
+```shell
+--enable-drag-drop
+
+# Example: Package an app that requires drag-drop functionality
+pake https://planka.example.com --name PlankApp --enable-drag-drop
+```
+
+#### [keep-binary]
+
+Keep the raw binary file alongside the installer. Default is `false`. When enabled, also outputs a standalone executable that can run without installation.
+
+```shell
+--keep-binary
+
+# Example: Package app with both installer and standalone binary
+pake https://github.com --name GitHub --keep-binary
+```
+
+**Output**: Creates both installer and standalone executable (`AppName-binary` on Unix, `AppName.exe` on Windows).
 
 #### [installer-language]
 
@@ -388,26 +396,6 @@ Enable developer tools and detailed logging for debugging.
 ### Packaging Complete
 
 After completing the above steps, your application should be successfully packaged. Please note that the packaging process may take some time depending on your system configuration and network conditions. Be patient, and once the packaging is complete, you can find the application installer in the specified directory.
-
-## Development
-
-The `DEFAULT_DEV_PAKE_OPTIONS` configuration in `bin/defaults.ts` can be modified at development time to match the `pake-cli` configuration description.
-
-```typescript
-export const DEFAULT_DEV_PAKE_OPTIONS: PakeCliOptions & { url: string } = {
-  ...DEFAULT_PAKE_OPTIONS,
-  url: "https://weekly.tw93.fun/",
-  name: "Weekly",
-};
-```
-
-then
-
-```bash
-pnpm run cli:dev
-```
-
-The script will read the above configuration and packages the specified `app` using `watch` mode, and changes to the `pake-cli` code and `pake` are hot updated in real time.
 
 ## Docker
 
