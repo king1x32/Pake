@@ -296,22 +296,8 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>GoodbyeNJN</b></sub>
                 </a>
             </td>
-            <td align="center">
-                <a href="https://github.com/eltociear">
-                    <img src="https://avatars.githubusercontent.com/u/22633385?v=4" width="90;" alt="eltociear"/>
-                    <br />
-                    <sub><b>Ikko Eltociear Ashimine</b></sub>
-                </a>
-            </td>
 		</tr>
 		<tr>
-            <td align="center">
-                <a href="https://github.com/kittizz">
-                    <img src="https://avatars.githubusercontent.com/u/62899732?v=4" width="90;" alt="kittizz"/>
-                    <br />
-                    <sub><b>Kittizz</b></sub>
-                </a>
-            </td>
             <td align="center">
                 <a href="https://github.com/lkieryan">
                     <img src="https://avatars.githubusercontent.com/u/187804088?v=4" width="90;" alt="lkieryan"/>
@@ -326,8 +312,6 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>Yue Yang</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/xinyii">
                     <img src="https://avatars.githubusercontent.com/u/17895104?v=4" width="90;" alt="xinyii"/>
@@ -363,6 +347,8 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>Matt Bajorek</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/kittizz">
                     <img src="https://avatars.githubusercontent.com/u/62899732?v=4" width="90;" alt="kittizz"/>
@@ -385,79 +371,12 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/imabutahersiddik">
-                    <img src="https://avatars.githubusercontent.com/u/138387257?v=4" width="90;" alt="imabutahersiddik"/>
-                    <br />
-                    <sub><b>Abu Taher Siddik</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/kidylee">
-                    <img src="https://avatars.githubusercontent.com/u/841310?v=4" width="90;" alt="kidylee"/>
-                    <br />
-                    <sub><b>An Li</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/nekomeowww">
-                    <img src="https://avatars.githubusercontent.com/u/11081491?v=4" width="90;" alt="nekomeowww"/>
-                    <br />
-                    <sub><b>Ayaka Neko</b></sub>
-                </a>
-            </td>
-		</tr>
-		<tr>
-            <td align="center">
-                <a href="https://github.com/turkyden">
-                    <img src="https://avatars.githubusercontent.com/u/24560160?v=4" width="90;" alt="turkyden"/>
-                    <br />
-                    <sub><b>Dengju Deng</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/fvn-elmy">
-                    <img src="https://avatars.githubusercontent.com/u/71275745?v=4" width="90;" alt="fvn-elmy"/>
-                    <br />
-                    <sub><b>Fabien</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/Fechin">
-                    <img src="https://avatars.githubusercontent.com/u/2541482?v=4" width="90;" alt="Fechin"/>
-                    <br />
-                    <sub><b>Fechin</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/ImgBotApp">
-                    <img src="https://avatars.githubusercontent.com/u/31427850?v=4" width="90;" alt="ImgBotApp"/>
-                    <br />
-                    <sub><b>Imgbot</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/droid-Q">
-                    <img src="https://avatars.githubusercontent.com/u/708277?v=4" width="90;" alt="droid-Q"/>
-                    <br />
-                    <sub><b>Jiaqi Gu</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/JohannLai">
-                    <img src="https://avatars.githubusercontent.com/u/10769405?v=4" width="90;" alt="JohannLai"/>
-                    <br />
-                    <sub><b>Johannlai</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/Jason6987">
                     <img src="https://avatars.githubusercontent.com/u/140222795?v=4" width="90;" alt="Jason6987"/>
                     <br />
                     <sub><b>Luminall</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/Milo123459">
                     <img src="https://avatars.githubusercontent.com/u/50248166?v=4" width="90;" alt="Milo123459"/>
@@ -479,6 +398,8 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>Xie Ruiqi</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/bocanhcam">
                     <img src="https://avatars.githubusercontent.com/u/35592955?v=4" width="90;" alt="bocanhcam"/>
@@ -486,8 +407,6 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>bocanhcam</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/geekvest">
                     <img src="https://avatars.githubusercontent.com/u/126322776?v=4" width="90;" alt="geekvest"/>
@@ -509,8 +428,6 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>Null</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/liudonghua123">
                     <img src="https://avatars.githubusercontent.com/u/2276718?v=4" width="90;" alt="liudonghua123"/>
@@ -532,6 +449,8 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>Ranger</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/hetz">
                     <img src="https://avatars.githubusercontent.com/u/820141?v=4" width="90;" alt="hetz"/>
@@ -539,13 +458,11 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>贺天卓</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
-                <a href="https://github.com/Jason6987">
-                    <img src="https://avatars.githubusercontent.com/u/140222795?v=4" width="90;" alt="Jason6987"/>
+                <a href="https://github.com/JohannLai">
+                    <img src="https://avatars.githubusercontent.com/u/10769405?v=4" width="90;" alt="JohannLai"/>
                     <br />
-                    <sub><b>Luminall</b></sub>
+                    <sub><b>Johannlai</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -583,6 +500,8 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>Dengju Deng</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/nekomeowww">
                     <img src="https://avatars.githubusercontent.com/u/11081491?v=4" width="90;" alt="nekomeowww"/>
@@ -590,8 +509,6 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                     <sub><b>Ayaka Neko</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/kidylee">
                     <img src="https://avatars.githubusercontent.com/u/841310?v=4" width="90;" alt="kidylee"/>
