@@ -262,17 +262,17 @@ Pake 的发展离不开这些优秀的贡献者 ❤️
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/AielloChan">
-                    <img src="https://avatars.githubusercontent.com/u/7900765?v=4" width="90;" alt="AielloChan"/>
-                    <br />
-                    <sub><b>Aiello</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/YangguangZhou">
                     <img src="https://avatars.githubusercontent.com/u/61733195?v=4" width="90;" alt="YangguangZhou"/>
                     <br />
                     <sub><b>Jerry Zhou</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/AielloChan">
+                    <img src="https://avatars.githubusercontent.com/u/7900765?v=4" width="90;" alt="AielloChan"/>
+                    <br />
+                    <sub><b>Aiello</b></sub>
                 </a>
             </td>
             <td align="center">
