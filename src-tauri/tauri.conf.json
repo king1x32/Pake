@@ -7,13 +7,13 @@
     "trayIcon": {
       "iconPath": "png/facebook_512.png",
       "iconAsTemplate": false,
-          "id": "pake-tray"
-        },
-        "security": {
-          "headers": {}
-        }
-      },
-      "build": {
-        "frontendDist": "../dist"
-      }
+      "id": "pake-tray"
+    },
+    "security": {
+      "headers": {}
     }
+  },
+  "build": {
+    "frontendDist": "../dist"
+  }
+}

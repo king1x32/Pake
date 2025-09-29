@@ -1,21 +1,13 @@
 {
   "productName": "facebook",
   "bundle": {
-    "icon": [
-      "png/facebook_512.png"
-    ],
+    "icon": ["png/facebook_512.png"],
     "active": true,
     "linux": {
       "deb": {
-        "depends": [
-          "curl",
-          "wget"
-        ]
+        "depends": ["curl", "wget"]
       }
     },
-    "targets": [
-      "deb",
-      "appimage"
-    ]
+    "targets": ["deb", "appimage"]
   }
-  }
+}

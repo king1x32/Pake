@@ -1,11 +1,7 @@
 {
   "bundle": {
-      "icon": [
-      "icons/facebook.icns"
-    ],
+    "icon": ["icons/facebook.icns"],
     "active": true,
-    "targets": [
-      "dmg"
-    ]
+    "targets": ["dmg"]
   }
 }
