@@ -30,5 +30,6 @@
   },
   "system_tray_path": "png/facebook_512.png",
   "inject": [],
-  "proxy_url": ""
+  "proxy_url": "",
+  "multi_instance": false
 }
