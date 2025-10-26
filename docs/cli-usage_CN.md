@@ -154,6 +154,14 @@ pake https://github.com --name GitHub
 --fullscreen
 ```
 
+#### [maximize]
+
+设置应用程序是否在启动时最大化窗口，默认为 `false`。使用以下命令可以设置应用程序启动时窗口最大化。
+
+```shell
+--maximize
+```
+
 #### [activation-shortcut]
 
 设置应用程序的激活快捷键。默认为空，不生效，可以使用以下命令自定义激活快捷键，例如 `CmdOrControl+Shift+P`，使用可参考 [available-modifiers](https://www.electronjs.org/docs/latest/api/accelerator#available-modifiers)。
@@ -287,6 +295,19 @@ pake https://github.com --name GitHub
 --hide-on-close false
 ```
 
+#### [start-to-tray]
+
+启动时将应用程序最小化到系统托盘而不是显示窗口。必须与 `--show-system-tray` 一起使用。默认为 `false`。
+
+```shell
+--start-to-tray
+
+# 示例：启动时隐藏到托盘（必须与 --show-system-tray 一起使用）
+pake https://github.com --name GitHub --show-system-tray --start-to-tray
+```
+
+**注意**：双击托盘图标可以显示/隐藏窗口。如果不与 `--show-system-tray` 一起使用，此选项将被忽略。
+
 #### [title]
 
 设置窗口标题栏文本，macOS 未指定时不显示标题，Windows/Linux 回退使用应用名称。
@@ -415,16 +436,19 @@ pake ./my-app/index.html --name "my-app" --use-local-file
 ## Docker 使用
 
 ```shell
-# 在Linux上，您可以通过 Docker 运行 Pake CLI。
-docker run -it --rm \ # Run interactively, remove container after exit
-    -v YOUR_DIR:/output \ # Files from container's /output will be in YOU_DIR
+# 在 Linux 上通过 Docker 运行 Pake CLI（AppImage 构建需要 FUSE 权限）
+docker run --rm --privileged \
+    --device /dev/fuse \
+    --security-opt apparmor=unconfined \
+    -v YOUR_DIR:/output \
     ghcr.io/tw93/pake \
     <arguments>
 
-# For example:
-docker run -it --rm \
+# 例如：
+docker run --rm --privileged \
+    --device /dev/fuse \
+    --security-opt apparmor=unconfined \
     -v ./packages:/output \
     ghcr.io/tw93/pake \
-    https://example.com --name MyApp --icon ./icon.png
-
+    https://example.com --name MyApp --icon ./icon.png --targets appimage
 ```

@@ -155,6 +155,15 @@ screen.
 --fullscreen
 ```
 
+#### [maximize]
+
+Determine whether the application launches with a maximized window. Default is `false`. Use the following command to enable
+maximize.
+
+```shell
+--maximize
+```
+
 #### [activation-shortcut]
 
 Set the activation shortcut for the application. Default is empty, so it does not take effect. You can customize the activation shortcut with the following commands, e.g. `CmdOrControl+Shift+P`. Usage can refer to [available-modifiers](https://www.electronjs.org/docs/latest/api/accelerator#available-modifiers).
@@ -288,6 +297,19 @@ Hide window instead of closing the application when clicking close button. Platf
 --hide-on-close false
 ```
 
+#### [start-to-tray]
+
+Start the application minimized to system tray instead of showing the window. Must be used with `--show-system-tray`. Default is `false`.
+
+```shell
+--start-to-tray
+
+# Example: Start hidden to tray (must use with --show-system-tray)
+pake https://github.com --name GitHub --show-system-tray --start-to-tray
+```
+
+**Note**: Double-click the tray icon to show/hide the window. If used without `--show-system-tray`, this option is ignored.
+
 #### [title]
 
 Set the window title bar text. macOS shows no title if not specified; Windows/Linux fallback to app name.
@@ -416,16 +438,19 @@ After completing the above steps, your application should be successfully packag
 ## Docker
 
 ```shell
-# On Linux, you can run the Pake CLI via Docker
-docker run -it --rm \ # Run interactively, remove container after exit
-    -v YOUR_DIR:/output \ # Files from container's /output will be in YOU_DIR
+# Run the Pake CLI via Docker (AppImage builds need FUSE access)
+docker run --rm --privileged \
+    --device /dev/fuse \
+    --security-opt apparmor=unconfined \
+    -v YOUR_DIR:/output \
     ghcr.io/tw93/pake \
     <arguments>
 
 # For example:
-docker run -it --rm \
+docker run --rm --privileged \
+    --device /dev/fuse \
+    --security-opt apparmor=unconfined \
     -v ./packages:/output \
     ghcr.io/tw93/pake \
-    https://example.com --name myapp --icon ./icon.png
-
+    https://example.com --name myapp --icon ./icon.png --targets appimage
 ```
